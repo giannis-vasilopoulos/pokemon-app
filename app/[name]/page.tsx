@@ -42,6 +42,7 @@ export default async function PokemonDetailPage({
               width={96}
               height={96}
               priority
+              loading="eager"
               src={pokemon.sprites.front_default}
               alt={pokemon.name}
               className="h-24 w-24 object-contain"
