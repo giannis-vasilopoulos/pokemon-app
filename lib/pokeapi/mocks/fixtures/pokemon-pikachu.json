@@ -1,0 +1,22 @@
+{
+  "id": 25,
+  "name": "pikachu",
+  "sprites": {
+    "front_default": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+  },
+  "types": [
+    {
+      "type": {
+        "name": "electric"
+      }
+    }
+  ],
+  "stats": [
+    {
+      "base_stat": 35,
+      "stat": {
+        "name": "hp"
+      }
+    }
+  ]
+}
