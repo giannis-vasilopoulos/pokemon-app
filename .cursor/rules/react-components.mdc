@@ -10,4 +10,4 @@ alwaysApply: false
 - Feature components compose from `ui/` — don't reimplement primitives
 - Props interfaces named `{Component}Props`
 - No fetch, Query, or Zustand inside `ui/` components
-- Add `.stories.tsx` for new reusable `ui/` or `pokemon/` components
+- Add stories in `stories/` for new reusable `ui/` or `pokemon/` components
