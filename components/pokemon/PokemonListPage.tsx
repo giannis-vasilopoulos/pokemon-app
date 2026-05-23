@@ -1,22 +1,33 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import { PaginationControls } from '@/components/pokemon/PaginationControls';
 import { PokemonList } from '@/components/pokemon/PokemonList';
 import { TypeFilter } from '@/components/pokemon/TypeFilter';
 import { PAGE_SIZE } from '@/lib/pokeapi/constants';
 import { usePokemonListPage } from '@/hooks/usePokemonListPage';
+import type {
+  NamedResource,
+  PaginatedList,
+  TypeDetail,
+} from '@/lib/pokeapi/types';
 
-export function PokemonListPage() {
+export function PokemonListPage({
+  type,
+  offset,
+  initialTypes,
+  initialListOrTypeData,
+}: {
+  type: string | null;
+  offset: number;
+  initialTypes: PaginatedList<NamedResource>;
+  initialListOrTypeData: PaginatedList<NamedResource> | TypeDetail;
+}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const type = searchParams.get('type');
-  const offset = Number(searchParams.get('offset') ?? '0');
-
   const { items, total, hasNext, hasPrev, isLoading, isError } =
-    usePokemonListPage(type, offset);
+    usePokemonListPage(type, offset, initialListOrTypeData);
 
   const updateParams = useCallback(
     (nextType: string | null, nextOffset: number) => {
@@ -42,6 +53,7 @@ export function PokemonListPage() {
         <TypeFilter
           value={type}
           onChange={(nextType) => updateParams(nextType, 0)}
+          initialTypes={initialTypes}
         />
         <PaginationControls
           offset={offset}

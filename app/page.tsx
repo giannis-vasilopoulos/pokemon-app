@@ -1,20 +1,30 @@
-import { Suspense } from 'react';
-
 import { PokemonListPage } from '@/components/pokemon/PokemonListPage';
-import { Skeleton } from '@/components/ui/skeleton';
+import { PAGE_SIZE } from '@/lib/pokeapi/constants';
+import { getPokemonPage } from '@/lib/pokeapi/pokemon';
+import { getAllTypes, getPokemonByType } from '@/lib/pokeapi/types-api';
 
-export default function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ type: string; offset: string }>;
+}) {
+  const { type, offset } = await searchParams;
+  const resolvedType = type ?? null;
+  const resolvedOffset = Number(offset ?? '0');
+
+  const [types, listOrTypeData] = await Promise.all([
+    getAllTypes(),
+    resolvedType
+      ? getPokemonByType(resolvedType)
+      : getPokemonPage(PAGE_SIZE, resolvedOffset),
+  ]);
+
   return (
-    <Suspense
-      fallback={
-        <div className="mx-auto max-w-5xl space-y-4 px-4 py-8">
-          <Skeleton className="h-10 w-48" />
-          <Skeleton className="h-9 w-full" />
-          <Skeleton className="h-64 w-full" />
-        </div>
-      }
-    >
-      <PokemonListPage />
-    </Suspense>
+    <PokemonListPage
+      type={resolvedType}
+      offset={resolvedOffset}
+      initialTypes={types}
+      initialListOrTypeData={listOrTypeData}
+    />
   );
 }

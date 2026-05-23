@@ -7,19 +7,31 @@ import { PAGE_SIZE } from '@/lib/pokeapi/constants';
 import { paginateList } from '@/lib/pokeapi/pagination';
 import { getPokemonPage } from '@/lib/pokeapi/pokemon';
 import { getPokemonByType } from '@/lib/pokeapi/types-api';
-import type { NamedResource } from '@/lib/pokeapi/types';
+import type {
+  NamedResource,
+  TypeDetail,
+  PaginatedList,
+} from '@/lib/pokeapi/types';
 
-export function usePokemonListPage(type: string | null, offset: number) {
+export function usePokemonListPage(
+  type: string | null,
+  offset: number,
+  initialListOrTypeData: PaginatedList<NamedResource> | TypeDetail
+) {
   const listQuery = useQuery({
     queryKey: ['pokemon-list', offset],
     queryFn: () => getPokemonPage(PAGE_SIZE, offset),
     enabled: !type,
+    initialData: !type
+      ? (initialListOrTypeData as PaginatedList<NamedResource>)
+      : undefined,
   });
 
   const typeQuery = useQuery({
     queryKey: ['type-pokemon', type],
     queryFn: () => getPokemonByType(type!),
-    enabled: Boolean(type),
+    enabled: !!type,
+    initialData: type ? (initialListOrTypeData as TypeDetail) : undefined,
   });
 
   const typePage = useMemo(() => {

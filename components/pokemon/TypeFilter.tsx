@@ -9,14 +9,16 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useTypes } from '@/hooks/useTypes';
+import type { PaginatedList, NamedResource } from '@/lib/pokeapi/types';
 
 type TypeFilterProps = {
   value: string | null;
   onChange: (value: string | null) => void;
+  initialTypes: PaginatedList<NamedResource>;
 };
 
-export function TypeFilter({ value, onChange }: TypeFilterProps) {
-  const { data, isLoading, isError } = useTypes();
+export function TypeFilter({ value, onChange, initialTypes }: TypeFilterProps) {
+  const { data, isLoading, isError } = useTypes(initialTypes);
 
   if (isLoading) {
     return <Skeleton className="h-9 w-48" />;

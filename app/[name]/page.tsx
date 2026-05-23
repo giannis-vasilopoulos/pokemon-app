@@ -37,7 +37,7 @@ export default async function PokemonDetailPage({
           <CardTitle className="text-2xl capitalize">{pokemon.name}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {pokemon.sprites.front_default ? (
+          {!!pokemon.sprites.front_default && (
             <Image
               width={96}
               height={96}
@@ -48,7 +48,7 @@ export default async function PokemonDetailPage({
               className="h-24 w-24 object-contain"
               unoptimized
             />
-          ) : null}
+          )}
           <div className="flex flex-wrap gap-2">
             {pokemon.types.map(({ type }) => (
               <Badge key={type.name} className="capitalize">
