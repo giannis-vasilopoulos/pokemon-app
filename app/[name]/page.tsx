@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -37,11 +38,14 @@ export default async function PokemonDetailPage({
         </CardHeader>
         <CardContent className="space-y-4">
           {pokemon.sprites.front_default ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
+              width={96}
+              height={96}
+              priority
               src={pokemon.sprites.front_default}
               alt={pokemon.name}
-              className="h-32 w-32 object-contain"
+              className="h-24 w-24 object-contain"
+              unoptimized
             />
           ) : null}
           <div className="flex flex-wrap gap-2">
