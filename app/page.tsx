@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+
 import { PokemonListPage } from '@/components/pokemon/PokemonListPage';
 import { Skeleton } from '@/components/ui/skeleton';
 

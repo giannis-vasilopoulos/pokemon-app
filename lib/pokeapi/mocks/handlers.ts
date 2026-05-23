@@ -1,5 +1,7 @@
 import { http, HttpResponse } from 'msw';
+
 import { POKEAPI_BASE_URL } from '../constants';
+
 import listFixture from './fixtures/pokemon-list.json';
 import typesFixture from './fixtures/types-list.json';
 import typeFireFixture from './fixtures/type-fire.json';

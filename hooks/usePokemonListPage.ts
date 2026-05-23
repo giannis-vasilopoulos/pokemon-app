@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+
 import { PAGE_SIZE } from '@/lib/pokeapi/constants';
 import { paginateList } from '@/lib/pokeapi/pagination';
 import { getPokemonPage } from '@/lib/pokeapi/pokemon';

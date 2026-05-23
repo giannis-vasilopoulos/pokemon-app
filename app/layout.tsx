@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+
 import { AppNav } from '@/components/layout/AppNav';
 import { QueryProvider } from '@/components/providers/QueryProvider';
 import './globals.css';

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { http, HttpResponse } from 'msw';
+
 import { pokeapiServer } from '../mocks/server';
 import { POKEAPI_BASE_URL } from '../constants';
 import { PokeApiError, PokeApiNotFoundError, pokeapiFetch } from '../client';

@@ -2,6 +2,7 @@
 
 import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+
 import { PaginationControls } from '@/components/pokemon/PaginationControls';
 import { PokemonList } from '@/components/pokemon/PokemonList';
 import { TypeFilter } from '@/components/pokemon/TypeFilter';
