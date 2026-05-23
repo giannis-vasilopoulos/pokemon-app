@@ -1,36 +1,74 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pokémon App
 
-## Getting Started
+Tech assessment app for browsing, filtering, and comparing Pokémon via [PokeAPI](https://pokeapi.co/).
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 22 (see `.nvmrc`)
+- [pnpm](https://pnpm.io/)
+
+## Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
+cp .env.example .env.local   # optional
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script                 | Description                    |
+| ---------------------- | ------------------------------ |
+| `pnpm dev`             | Start Next.js dev server       |
+| `pnpm build`           | Production build               |
+| `pnpm lint`            | ESLint                         |
+| `pnpm typecheck`       | TypeScript check               |
+| `pnpm test`            | Vitest (watch)                 |
+| `pnpm test:run`        | Vitest (CI)                    |
+| `pnpm test:e2e`        | Playwright E2E                 |
+| `pnpm storybook`       | Component library on port 6006 |
+| `pnpm build-storybook` | Static Storybook export        |
+| `pnpm format`          | Prettier write                 |
 
-## Learn More
+## Architecture
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/                  # Next.js App Router (/, /[name], /compare)
+components/
+  ui/                 # shadcn/ui design system (Radix + Tailwind)
+  pokemon/            # Domain components
+lib/pokeapi/          # API client, types, mappers, MSW mocks
+hooks/                # TanStack Query hooks
+stores/               # Zustand (compare slots)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### List pagination (assessment)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **No type filter:** `GET /pokemon?limit=40&offset=N` (API pagination)
+- **Type filter:** `GET /type/{name}` once, frontend slice of 40 (TanStack Query cache)
+- URL state: `/?type=fire&offset=40`
 
-## Deploy on Vercel
+### State ownership
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Concern                   | Tool             |
+| ------------------------- | ---------------- |
+| Server data (list, types) | TanStack Query   |
+| Compare slots             | Zustand          |
+| List filter/page          | URL searchParams |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Testing
+
+- **Vitest + MSW** — unit tests for API client, pagination, stores
+- **Playwright** — smoke E2E for list and compare routes
+- **Storybook** — isolated component development
+
+## AI workflow
+
+Cursor rules live in `.cursor/rules/`. AI assists with boilerplate; all diffs are human-reviewed. See `docs/DECISIONS.md` for ADRs.
+
+## Learn more
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [PokeAPI](https://pokeapi.co/docs/v2)

@@ -1,0 +1,13 @@
+---
+description: Testing conventions
+globs: **/*.{test,spec}.{ts,tsx},e2e/**
+alwaysApply: false
+---
+
+# Testing
+
+- Vitest + RTL for units; Playwright for user flows
+- MSW required for PokeAPI in unit tests — extend `mocks/handlers.ts`
+- Fixtures in `mocks/fixtures/`; `onUnhandledRequest: 'error'` in Vitest
+- E2E hits dev server; MSW is for Vitest unless explicitly added to E2E
+- Test behavior, not implementation details

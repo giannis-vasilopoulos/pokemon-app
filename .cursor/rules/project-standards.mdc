@@ -1,0 +1,13 @@
+---
+description: Core project standards
+alwaysApply: true
+---
+
+# Project Standards
+
+- Use **pnpm** only (`pnpm install`, `pnpm dev`, etc.)
+- TypeScript strict; avoid `any` unless documented
+- Minimize diff scope; match existing conventions
+- Read `AGENTS.md` before Next.js API usage (Next 16 breaking changes)
+- Conventional Commits: `feat:`, `fix:`, `test:`, `chore:`
+- Never commit secrets; use `.env.local`

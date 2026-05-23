@@ -1,0 +1,13 @@
+---
+description: Zustand store conventions
+globs: stores/**/*.ts
+alwaysApply: false
+---
+
+# Zustand Stores
+
+- Client UI state only — compare slots, UI toggles
+- Never store server/API data — use TanStack Query
+- Never store list pagination or type filter — URL + Query
+- One store per domain; keep stores small and testable
+- Export typed hooks like `useCompareStore`

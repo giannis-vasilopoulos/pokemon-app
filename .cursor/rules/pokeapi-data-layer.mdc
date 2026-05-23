@@ -1,0 +1,14 @@
+---
+description: PokeAPI data layer conventions
+globs: lib/pokeapi/**
+alwaysApply: false
+---
+
+# PokeAPI Data Layer
+
+- All HTTP via `client.ts` — no raw `fetch` in components
+- `client.ts` is pure fetch — no TanStack Query or React hooks
+- Raw API shapes in `types.ts`; UI uses view models from `mappers.ts`
+- Handle 404 vs 5xx distinctly (`notFound()` vs error boundary)
+- Base URL from `constants.ts` / env
+- Tests mock via MSW `mocks/handlers.ts`, not by mocking `client.ts`

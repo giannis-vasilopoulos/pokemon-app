@@ -1,0 +1,14 @@
+---
+description: Next.js App Router patterns
+globs: app/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Next.js Patterns
+
+- List page (`app/page.tsx`) is a client exception — TanStack Query + type filter
+- Detail/compare default to Server Components where possible
+- Sync list **type + offset** to URL (`/?type=fire&offset=40`)
+- Static routes (`/compare`) alongside dynamic `[name]`
+- Colocate `loading.tsx`, `error.tsx`, `not-found.tsx` with routes
+- Use `next/image` for sprites when optimizing; img ok for scaffold
