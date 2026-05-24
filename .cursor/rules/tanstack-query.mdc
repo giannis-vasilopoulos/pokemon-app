@@ -7,7 +7,7 @@ alwaysApply: false
 # TanStack Query
 
 - List/type fetching via Query hooks — no raw `useEffect` + fetch
-- Query keys: `['types']`, `['pokemon-list', offset]`, `['type-pokemon', typeName]`
-- Type filter: fetch `/type/{name}` once, paginate with `paginateList()`
-- No type: `GET /pokemon?limit=40&offset=N`
-- Hooks call Query → `lib/pokeapi/*.ts` → `client.ts`
+- Query keys: `['types']`, `['pokemon-list', offset]`, `['type-pokemon', typeName, offset]`
+- Default list: GraphQL `PokemonListPage` via `getPokemonListPage(limit, offset)`
+- Type filter: GraphQL `PokemonListByType` via `getPokemonListByType(type, limit, offset)`
+- Hooks call Query → `lib/pokeapi/graphql/pokemon-list.ts` → `pokeapiGraphql`
