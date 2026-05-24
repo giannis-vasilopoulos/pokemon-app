@@ -1,5 +1,6 @@
 import Link from 'next/link';
 
+import { CompareNavLink } from '@/components/layout/CompareNavLink';
 import { Button } from '@/components/ui/button';
 
 export function AppNav() {
@@ -9,9 +10,7 @@ export function AppNav() {
         <Button variant="ghost" asChild>
           <Link href="/">List</Link>
         </Button>
-        <Button variant="ghost" asChild>
-          <Link href="/compare">Compare</Link>
-        </Button>
+        <CompareNavLink />
       </div>
     </nav>
   );
