@@ -44,7 +44,16 @@ Owned, styled, accessible components in-repo; Storybook documents the library.
 - **URL** — shareable team via optional `?pokemons=` on `/compare` (same pattern as list `type`/`offset`)
 - On compare page load: URL param wins when present; otherwise store hydrates URL
 - Max **3** slots; comma-separated PokeAPI slugs; plain `/compare` valid (empty team)
-- Invalid URL segments dropped individually; cap at 3 after sanitize; URL rewritten to match
+- Invalid URL segments dropped individually (malformed slugs sync; unknown names async via PokeAPI 404); cap at 3 after sanitize; URL rewritten to match
+
+## Compare stats visualization: shadcn Progress + Recharts
+
+- **Progress bars** — shadcn/ui `Progress` (Radix primitive) in `components/ui/progress.tsx`; stat fill = `base_stat / 255`, styled with existing design tokens
+- **Radar chart** — Recharts `RadarChart` via shadcn `Chart` wrapper (`components/ui/chart.tsx`); overlaid series for up to 3 compared Pokémon
+- **Not D3.js** — imperative SVG manipulation is unnecessary for 6-axis radar and linear stat bars; Recharts is declarative and matches our shadcn stack
+- **Not WebGL** — compare workload is O(slots × stats) with max 18 points; SVG rendering is sufficient and keeps SSR/a11y/testing simple
+- Chart colors use CSS variables (`--chart-1` … `--chart-3`) in `globals.css`, consistent with shadcn Chart theming
+- Domain components live in `components/pokemon/` (`CompareRadarChart`, stat rows with `Progress`); no fetch/Query inside `ui/`
 
 ## Storybook
 
