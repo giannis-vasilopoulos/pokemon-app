@@ -33,18 +33,21 @@ export function CompareStatsTable({
   const statRows = [...STAT_ORDER, 'total'] as const;
 
   return (
-    <div className="overflow-x-auto rounded-xl border">
-      <table className="w-full text-sm">
+    <div className="mx-0 overflow-x-auto rounded-xl border sm:px-0">
+      <table className="w-max min-w-full text-sm">
         <thead>
           <tr className="border-b">
-            <th scope="col" className="p-3 text-left font-medium">
+            <th
+              scope="col"
+              className="bg-background sticky left-0 z-10 p-3 text-left font-medium whitespace-nowrap"
+            >
               Stat
             </th>
             {pokemon.map((entry) => (
               <th
                 key={entry.name}
                 scope="col"
-                className="p-3 text-center font-medium"
+                className="min-w-28 p-3 text-center font-medium"
               >
                 <div className="flex flex-col items-center gap-2">
                   <span className="capitalize">{entry.name}</span>
@@ -73,29 +76,27 @@ export function CompareStatsTable({
                 key={statKey}
                 className={cn(
                   'border-b last:border-0',
-                  statKey === 'total' && 'bg-muted/50 font-medium'
+                  statKey === 'total' && 'bg-muted font-medium'
                 )}
               >
-                <th scope="row" className="text-muted-foreground p-3 text-left">
+                <th
+                  scope="row"
+                  className={cn(
+                    'text-muted-foreground bg-background sticky left-0 z-10 p-3 text-left whitespace-nowrap',
+                    statKey === 'total' && 'bg-muted'
+                  )}
+                >
                   {formatStatLabel(statKey)}
                 </th>
                 {pokemon.map((entry, index) => {
                   const value = entry.stats?.[statKey];
                   const isWinner = highlight && winners.has(index);
 
-                  if (entry.isLoading) {
-                    return (
-                      <td key={entry.name} className="p-3 text-center">
-                        <span className="text-muted-foreground">…</span>
-                      </td>
-                    );
-                  }
-
-                  if (entry.isError || value === undefined) {
+                  if (value === undefined) {
                     return (
                       <td
                         key={entry.name}
-                        className="text-destructive p-3 text-center"
+                        className="text-destructive min-w-28 p-3 text-center"
                       >
                         Failed to load
                       </td>
@@ -103,8 +104,8 @@ export function CompareStatsTable({
                   }
 
                   return (
-                    <td key={entry.name} className="p-3">
-                      <div className="flex flex-col items-center gap-2">
+                    <td key={entry.name} className="min-w-28 p-3">
+                      <div className="flex w-full min-w-24 flex-col items-center gap-2">
                         <span
                           className={cn(
                             'tabular-nums',
