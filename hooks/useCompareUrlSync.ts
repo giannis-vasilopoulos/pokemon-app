@@ -5,10 +5,12 @@ import { useRouter, useSearchParams } from 'next/navigation';
 
 import { COMPARE_QUERY_PARAM } from '@/lib/constants';
 import {
+  areCompareSlotsInSync,
   buildCompareHref,
-  getComparePath,
   sanitizeCompareParam,
+  serializeCompareSlots,
 } from '@/lib/compare/url';
+import { validateCompareSlots } from '@/lib/compare/validate';
 import { useCompareStore } from '@/stores/compare-store';
 
 export function useCompareUrlSync() {
@@ -22,17 +24,34 @@ export function useCompareUrlSync() {
     const hasParam = searchParams.has(COMPARE_QUERY_PARAM);
 
     if (hasParam) {
-      const sanitized = sanitizeCompareParam(
+      const slugSanitized = sanitizeCompareParam(
         searchParams.get(COMPARE_QUERY_PARAM) ?? ''
       );
-      isSyncingFromUrl.current = true;
-      setSlots(sanitized);
 
-      const target = buildCompareHref(sanitized);
-      if (target !== getComparePath(searchParams)) {
-        router.replace(target);
-      }
-      return;
+      let cancelled = false;
+
+      void (async () => {
+        const validated = await validateCompareSlots(slugSanitized);
+        if (cancelled) return;
+
+        const currentSlots = useCompareStore.getState().slots;
+        const slotsChanged =
+          serializeCompareSlots(currentSlots) !==
+          serializeCompareSlots(validated);
+
+        if (slotsChanged) {
+          isSyncingFromUrl.current = true;
+          setSlots(validated);
+        }
+
+        if (!areCompareSlotsInSync(searchParams, validated)) {
+          router.replace(buildCompareHref(validated));
+        }
+      })();
+
+      return () => {
+        cancelled = true;
+      };
     }
 
     const currentSlots = useCompareStore.getState().slots;
@@ -47,9 +66,8 @@ export function useCompareUrlSync() {
       return;
     }
 
-    const target = buildCompareHref(slots);
-    if (target !== getComparePath(searchParams)) {
-      router.replace(target);
+    if (!areCompareSlotsInSync(searchParams, slots)) {
+      router.replace(buildCompareHref(slots));
     }
   }, [router, searchParams, slots]);
 }

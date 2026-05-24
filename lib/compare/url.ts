@@ -11,7 +11,6 @@ export function isValidPokemonSlug(name: string): boolean {
 export function sanitizeCompareParam(
   raw: string | string[] | undefined
 ): string[] {
-  // TODO: validate slugs against PokeAPI — drop unknown names, keep valid siblings
   const input =
     raw === undefined || raw === null
       ? ''
@@ -40,10 +39,22 @@ export function serializeCompareSlots(slots: string[]): string {
 
 export function buildCompareHref(slots: string[]): Route {
   if (slots.length === 0) return '/compare';
-  return `/compare?${COMPARE_QUERY_PARAM}=${serializeCompareSlots(slots)}` as Route;
+  return `/compare?${COMPARE_QUERY_PARAM}=${serializeCompareSlots(slots)}`;
 }
 
-export function getComparePath(searchParams: URLSearchParams): string {
-  const query = searchParams.toString();
-  return query ? `/compare?${query}` : '/compare';
+export function areCompareSlotsInSync(
+  searchParams: URLSearchParams,
+  slots: string[]
+): boolean {
+  const hasParam = searchParams.has(COMPARE_QUERY_PARAM);
+  if (slots.length === 0) return !hasParam;
+
+  const urlSlots = sanitizeCompareParam(
+    searchParams.get(COMPARE_QUERY_PARAM) ?? ''
+  );
+  const canonical = serializeCompareSlots(slots);
+  if (serializeCompareSlots(urlSlots) !== canonical) return false;
+
+  const rawParam = searchParams.get(COMPARE_QUERY_PARAM) ?? '';
+  return rawParam === canonical;
 }
