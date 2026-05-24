@@ -107,9 +107,7 @@ describe('areCompareSlotsInSync', () => {
 
   it('is out of sync when url has invalid segments that sanitize away', () => {
     const params = new URLSearchParams('pokemons=pikachu,!!!,charizard');
-    expect(areCompareSlotsInSync(params, ['pikachu', 'charizard'])).toBe(
-      false
-    );
+    expect(areCompareSlotsInSync(params, ['pikachu', 'charizard'])).toBe(false);
   });
 
   it('is out of sync when slot order differs', () => {
