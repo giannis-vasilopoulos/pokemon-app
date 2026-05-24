@@ -8,9 +8,14 @@ import type { NamedResource } from '@/lib/pokeapi/types';
 type PokemonListProps = {
   items: NamedResource[];
   isLoading: boolean;
+  isFiltered?: boolean;
 };
 
-export function PokemonList({ items, isLoading }: PokemonListProps) {
+export function PokemonList({
+  items,
+  isLoading,
+  isFiltered = false,
+}: PokemonListProps) {
   if (isLoading) {
     return (
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -22,7 +27,11 @@ export function PokemonList({ items, isLoading }: PokemonListProps) {
   }
 
   if (items.length === 0) {
-    return <p className="text-muted-foreground text-sm">No Pokémon found.</p>;
+    return (
+      <p className="text-muted-foreground text-sm">
+        {isFiltered ? 'No Pokémon match your search.' : 'No Pokémon found.'}
+      </p>
+    );
   }
 
   return (
