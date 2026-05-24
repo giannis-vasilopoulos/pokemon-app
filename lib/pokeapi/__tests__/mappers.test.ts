@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { toPokemonCompareStats } from '../mappers';
+import {
+  normalizeFlavorText,
+  toPokemonCompareStats,
+  toPokemonListItem,
+  toPokemonListPageData,
+} from '../mappers';
+import type { GraphQLPokemonListResponse } from '../graphql/types';
 import type { PokemonStatEntry } from '../types';
 
 const fullStats: PokemonStatEntry[] = [
@@ -37,5 +43,88 @@ describe('toPokemonCompareStats', () => {
       speed: 0,
       total: 35,
     });
+  });
+});
+
+describe('normalizeFlavorText', () => {
+  it('replaces form feeds and newlines with spaces', () => {
+    expect(normalizeFlavorText('hello\fworld\nthere')).toBe(
+      'hello world there'
+    );
+  });
+});
+
+describe('toPokemonListItem', () => {
+  it('maps types and normalized description', () => {
+    expect(
+      toPokemonListItem({
+        name: 'bulbasaur',
+        pokemontypes: [
+          { type: { name: 'grass' } },
+          { type: { name: 'poison' } },
+        ],
+        pokemonspecy: {
+          pokemonspeciesflavortexts: [
+            { flavor_text: 'A strange seed\fwas planted.' },
+          ],
+        },
+      })
+    ).toEqual({
+      name: 'bulbasaur',
+      types: ['grass', 'poison'],
+      description: 'A strange seed was planted.',
+    });
+  });
+
+  it('defaults missing flavor text to empty string', () => {
+    expect(
+      toPokemonListItem({
+        name: 'missingno',
+        pokemontypes: [],
+        pokemonspecy: null,
+      })
+    ).toEqual({
+      name: 'missingno',
+      types: [],
+      description: '',
+    });
+  });
+});
+
+describe('toPokemonListPageData', () => {
+  const raw: GraphQLPokemonListResponse = {
+    pokemon: [
+      {
+        name: 'bulbasaur',
+        pokemontypes: [{ type: { name: 'grass' } }],
+        pokemonspecy: {
+          pokemonspeciesflavortexts: [{ flavor_text: 'Seed Pokémon.' }],
+        },
+      },
+    ],
+    pokemon_aggregate: { aggregate: { count: 1302 } },
+  };
+
+  it('maps items and pagination flags', () => {
+    expect(toPokemonListPageData(raw, 40, 0)).toEqual({
+      items: [
+        {
+          name: 'bulbasaur',
+          types: ['grass'],
+          description: 'Seed Pokémon.',
+        },
+      ],
+      total: 1302,
+      hasNext: true,
+      hasPrev: false,
+    });
+  });
+
+  it('sets hasPrev when offset is greater than zero', () => {
+    expect(toPokemonListPageData(raw, 40, 40).hasPrev).toBe(true);
+  });
+
+  it('sets hasNext false on last page', () => {
+    expect(toPokemonListPageData(raw, 40, 1280).hasNext).toBe(false);
   });
 });

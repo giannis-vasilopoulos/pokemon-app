@@ -1,4 +1,12 @@
-import type { NamedResource, PokemonStatEntry, PokemonSummary } from './types';
+import type {
+  GraphQLPokemonListResponse,
+  GraphQLPokemonListRow,
+} from './graphql/types';
+import type {
+  PokemonListItem,
+  PokemonListPageData,
+  PokemonStatEntry,
+} from './types';
 
 export const STAT_ORDER = [
   'hp',
@@ -17,10 +25,35 @@ export type PokemonCompareStats = Record<PokemonStatName, number> & {
 
 export const MAX_BASE_STAT = 255;
 
-export function toPokemonSummary(resource: NamedResource): PokemonSummary {
+export function normalizeFlavorText(text: string): string {
+  return text
+    .replace(/[\f\n]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function toPokemonListItem(row: GraphQLPokemonListRow): PokemonListItem {
   return {
-    name: resource.name,
-    url: resource.url,
+    name: row.name,
+    types: row.pokemontypes.map((entry) => entry.type.name),
+    description: normalizeFlavorText(
+      row.pokemonspecy?.pokemonspeciesflavortexts[0]?.flavor_text ?? ''
+    ),
+  };
+}
+
+export function toPokemonListPageData(
+  raw: GraphQLPokemonListResponse,
+  limit: number,
+  offset: number
+): PokemonListPageData {
+  const total = raw.pokemon_aggregate.aggregate.count;
+
+  return {
+    items: raw.pokemon.map(toPokemonListItem),
+    total,
+    hasNext: offset + limit < total,
+    hasPrev: offset > 0,
   };
 }
 

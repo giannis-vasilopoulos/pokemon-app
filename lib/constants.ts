@@ -8,3 +8,6 @@ export const POKEAPI_GRAPHQL_URL =
 export const PAGE_SIZE = 40;
 export const MAX_COMPARE_SLOTS = 3;
 export const COMPARE_QUERY_PARAM = 'pokemons';
+
+export const POKEMON_LIST_CACHE_TAG = 'pokemon-list';
+export const POKEMON_LIST_REVALIDATE_SECONDS = 3600;

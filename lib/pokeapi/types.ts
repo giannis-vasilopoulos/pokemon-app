@@ -10,14 +10,17 @@ export type PaginatedList<T> = {
   results: T[];
 };
 
-export type TypeEntry = {
-  pokemon: NamedResource;
+export type PokemonListItem = {
+  name: string;
+  description: string;
+  types: string[];
 };
 
-export type TypeDetail = {
-  id: number;
-  name: string;
-  pokemon: TypeEntry[];
+export type PokemonListPageData = {
+  items: PokemonListItem[];
+  total: number;
+  hasNext: boolean;
+  hasPrev: boolean;
 };
 
 export type PokemonSummary = {
