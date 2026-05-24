@@ -18,5 +18,7 @@ export const Pikachu: Story = {
       url: 'https://pokeapi.co/api/v2/pokemon/25/',
     },
     types: ['electric'],
+    description:
+      'When several of these Pokémon gather, their electricity could build and cause lightning storms.',
   },
 };

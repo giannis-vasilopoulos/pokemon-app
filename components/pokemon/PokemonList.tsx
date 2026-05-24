@@ -2,11 +2,10 @@
 
 import { PokemonCard } from '@/components/pokemon/PokemonCard';
 import { Skeleton } from '@/components/ui/skeleton';
-import { toPokemonSummary } from '@/lib/pokeapi/mappers';
-import type { NamedResource } from '@/lib/pokeapi/types';
+import type { PokemonListItem } from '@/lib/pokeapi/types';
 
 type PokemonListProps = {
-  items: NamedResource[];
+  items: PokemonListItem[];
   isLoading: boolean;
   isFiltered?: boolean;
 };
@@ -38,7 +37,11 @@ export function PokemonList({
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((item) => (
         <li key={item.name}>
-          <PokemonCard pokemon={toPokemonSummary(item)} />
+          <PokemonCard
+            pokemon={{ name: item.name, url: '' }}
+            types={item.types}
+            description={item.description}
+          />
         </li>
       ))}
     </ul>

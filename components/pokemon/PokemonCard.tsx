@@ -19,9 +19,14 @@ import { MAX_COMPARE_SLOTS } from '@/lib/constants';
 type PokemonCardProps = {
   pokemon: PokemonSummary;
   types?: string[];
+  description?: string;
 };
 
-export function PokemonCard({ pokemon, types = [] }: PokemonCardProps) {
+export function PokemonCard({
+  pokemon,
+  types = [],
+  description,
+}: PokemonCardProps) {
   const add = useCompareStore((state) => state.add);
   const remove = useCompareStore((state) => state.remove);
   const slots = useCompareStore((state) => state.slots);
@@ -41,7 +46,7 @@ export function PokemonCard({ pokemon, types = [] }: PokemonCardProps) {
             {pokemon.name}
           </Link>
         </CardTitle>
-        <CardDescription>Pokémon</CardDescription>
+        <CardDescription>{description || 'Pokémon'}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-wrap items-center gap-2">
         {types.map((type) => (
