@@ -12,12 +12,30 @@ Vitest integrates with Vite/ESM; Playwright is the modern default for Next.js E2
 
 Unit tests intercept `fetch` at the network layer via MSW handlers — same code path as production.
 
+## GraphQL for Pokémon list
+
+**Problem:** REST list endpoint (`GET /pokemon?limit=40&offset=N`) returns only `{ name, url }` per Pokémon. Rendering list cards with types (and other summary fields) would require one additional request per row — **41 HTTP calls per page** (1 list + 40 details), a classic N+1.
+
+**Decision:** Use [PokeAPI GraphQL v1beta2](https://graphql.pokeapi.co/v1beta2) for list and type-filtered list fetching.
+
+**Why it helps:**
+
+- One query returns paginated rows **and** nested relations (e.g. `pokemontypes { type { name } }`) plus total count via `pokemon_aggregate` — no per-card follow-up requests
+- Type filter uses the same pattern: `pokemon(where: { pokemontypes: { type: { name: { _eq: "fire" } } } }, limit, offset)` instead of fetching the entire type roster via REST and slicing client-side
+
+**Client choice:** Thin `fetch` wrapper (`lib/pokeapi/graphql/client.ts`), not Apollo or graphql-request — zero extra bundle cost, mirrors existing `pokeapiFetch`, works in RSC and Vitest/MSW.
+
+**Trade-offs:**
+
+- GraphQL endpoint is rate-limited (100 req/h/IP) and beta; TanStack Query + Next.js fetch cache mitigate repeat traffic
+- REST client kept for detail (`/[name]`) and compare — single-resource fetches do not suffer N+1
+
 ## TanStack Query for list + type filter
 
-Dual pagination modes:
+Dual pagination modes (both backed by GraphQL):
 
-- Default list: API `limit=40&offset=N`
-- Type filter: fetch `/type/{name}` once, slice pages in client (cached by Query)
+- Default list: `pokemon(limit, offset)` + `pokemon_aggregate` in one GraphQL request
+- Type filter: filtered `pokemon` query with same pagination args (cached by Query key `['type-pokemon', typeName]`)
 
 ## No TanStack Virtual
 

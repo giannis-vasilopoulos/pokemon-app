@@ -39,16 +39,24 @@ app/                  # Next.js App Router (/, /[name], /compare)
 components/
   ui/                 # shadcn/ui design system (Radix + Tailwind)
   pokemon/            # Domain components
-lib/pokeapi/          # API client, types, mappers, MSW mocks
+lib/pokeapi/          # REST + GraphQL clients, types, mappers, MSW mocks
+  graphql/            # Thin GraphQL client (PokeAPI v1beta2)
 hooks/                # TanStack Query hooks
 stores/               # Zustand (compare slots)
 ```
 
 ### List pagination (assessment)
 
-- **No type filter:** `GET /pokemon?limit=40&offset=N` (API pagination)
-- **Type filter:** `GET /type/{name}` once, frontend slice of 40 (TanStack Query cache)
+The list page needs more than names — cards show types and other summary fields. With the REST API, `GET /pokemon?limit=40&offset=N` returns only `{ name, url }` per row, so loading a full page of cards would require **1 + N requests** (classic N+1).
+
+**GraphQL** ([PokeAPI v1beta2](https://graphql.pokeapi.co/v1beta2)) resolves this in a single round trip: paginated `pokemon` rows plus nested fields (e.g. types) and total count via `pokemon_aggregate` in one query.
+
+- **No type filter:** GraphQL `pokemon(limit, offset)` + `pokemon_aggregate` (one request per page)
+- **Type filter:** GraphQL `pokemon(where: { pokemontypes: … })` with the same limit/offset (one request per page; replaces REST `GET /type/{name}` + client-side slice)
 - URL state: `/?type=fire&offset=40`
+- Client: thin `fetch` wrapper in `lib/pokeapi/graphql/` (no Apollo/graphql-request); TanStack Query handles caching
+
+REST (`lib/pokeapi/client.ts`) remains for detail and compare routes where single-resource fetches are sufficient.
 
 ### State ownership
 
@@ -71,4 +79,5 @@ Cursor rules live in `.cursor/rules/`. AI assists with boilerplate; all diffs ar
 ## Learn more
 
 - [Next.js Documentation](https://nextjs.org/docs)
-- [PokeAPI](https://pokeapi.co/docs/v2)
+- [PokeAPI REST](https://pokeapi.co/docs/v2)
+- [PokeAPI GraphQL](https://pokeapi.co/docs/graphql)
