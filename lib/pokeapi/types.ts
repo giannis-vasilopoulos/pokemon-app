@@ -24,3 +24,15 @@ export type PokemonSummary = {
   name: string;
   url: string;
 };
+
+export type PokemonStatEntry = {
+  base_stat: number;
+  stat: { name: string };
+};
+
+export type PokemonDetail = {
+  name: string;
+  sprites: { front_default: string | null };
+  types: Array<{ type: { name: string } }>;
+  stats: PokemonStatEntry[];
+};
