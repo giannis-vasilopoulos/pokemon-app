@@ -41,14 +41,7 @@ export function PokemonListPage({
   );
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-semibold tracking-tight">Pokémon</h1>
-        <p className="text-muted-foreground text-sm">
-          Browse, filter by type, and compare Pokémon.
-        </p>
-      </header>
-
+    <>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <TypeFilter
           value={type}
@@ -70,6 +63,6 @@ export function PokemonListPage({
       ) : (
         <PokemonList items={items} isLoading={isLoading} />
       )}
-    </div>
+    </>
   );
 }
