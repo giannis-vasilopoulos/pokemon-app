@@ -14,16 +14,17 @@ type CompareTableProps = {
   initialDetailsByName: Record<string, PokemonDetail>;
 };
 
-export function CompareTable({
+export function CompareView({
   initialSlots,
   initialDetailsByName,
 }: CompareTableProps) {
   useCompareUrlSync({ initialSlots });
-
   const hydrated = useHydrated();
+
   const storeSlots = useCompareStore((state) => state.slots);
   const remove = useCompareStore((state) => state.remove);
   const clear = useCompareStore((state) => state.clear);
+
   const slots = hydrated ? storeSlots : initialSlots;
   const { pokemon } = useComparePokemonDetails(slots, initialDetailsByName);
 

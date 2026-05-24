@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import { ShareTeamButton } from '@/components/pokemon/ShareTeamButton';
 import { resolveComparePageData } from '@/lib/compare/resolve';
 import { areCompareSlotsInSync, buildCompareHref } from '@/lib/compare/url';
-import { CompareTable } from '@/components/pokemon/CompareTable';
+import { CompareView } from '@/components/pokemon/CompareView';
 
 export default async function ComparePage({
   searchParams,
@@ -31,7 +31,7 @@ export default async function ComparePage({
         </header>
         <ShareTeamButton />
       </div>
-      <CompareTable initialSlots={slots} initialDetailsByName={detailsByName} />
+      <CompareView initialSlots={slots} initialDetailsByName={detailsByName} />
     </div>
   );
 }
