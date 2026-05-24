@@ -38,9 +38,13 @@ Not full atomic design — unnecessary for this scope.
 
 Owned, styled, accessible components in-repo; Storybook documents the library.
 
-## Zustand for compare slots only
+## Compare slots: Zustand + URL
 
-Server data stays in TanStack Query. List pagination/type in URL + Query.
+- **Zustand** — in-session UI state (add/remove from list cards, compare page edits)
+- **URL** — shareable team via optional `?pokemons=` on `/compare` (same pattern as list `type`/`offset`)
+- On compare page load: URL param wins when present; otherwise store hydrates URL
+- Max **3** slots; comma-separated PokeAPI slugs; plain `/compare` valid (empty team)
+- Invalid URL segments dropped individually; cap at 3 after sanitize; URL rewritten to match
 
 ## Storybook
 
