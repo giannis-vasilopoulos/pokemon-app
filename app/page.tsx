@@ -1,5 +1,5 @@
 import { PokemonListPage } from '@/components/pokemon/PokemonListPage';
-import { PAGE_SIZE } from '@/lib/pokeapi/constants';
+import { PAGE_SIZE } from '@/lib/constants';
 import { getPokemonPage } from '@/lib/pokeapi/pokemon';
 import { getAllTypes, getPokemonByType } from '@/lib/pokeapi/types-api';
 

@@ -11,9 +11,9 @@ export function ShareTeamButton() {
   const [copied, setCopied] = useState(false);
 
   const handleShare = useCallback(async () => {
-    await navigator.clipboard.writeText(window.location.href);
+    await navigator.clipboard.writeText(globalThis.location.href);
     setCopied(true);
-    window.setTimeout(() => setCopied(false), 2000);
+    globalThis.setTimeout(() => setCopied(false), 2000);
   }, []);
 
   return (

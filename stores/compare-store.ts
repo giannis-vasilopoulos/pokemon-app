@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-import { MAX_COMPARE_SLOTS } from '@/lib/compare/constants';
+import { MAX_COMPARE_SLOTS } from '@/lib/constants';
 
 type CompareStore = {
   slots: string[];

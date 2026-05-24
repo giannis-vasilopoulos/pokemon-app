@@ -1,4 +1,4 @@
-import { POKEAPI_BASE_URL } from './constants';
+import { POKEAPI_BASE_URL } from '../constants';
 
 export class PokeApiError extends Error {
   constructor(

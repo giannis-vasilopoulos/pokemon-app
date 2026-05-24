@@ -1,6 +1,6 @@
 import type { Route } from 'next';
 
-import { COMPARE_QUERY_PARAM, MAX_COMPARE_SLOTS } from './constants';
+import { COMPARE_QUERY_PARAM, MAX_COMPARE_SLOTS } from '@/lib/constants';
 
 const POKEMON_SLUG_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/;
 

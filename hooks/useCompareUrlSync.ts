@@ -3,7 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { COMPARE_QUERY_PARAM } from '@/lib/compare/constants';
+import { COMPARE_QUERY_PARAM } from '@/lib/constants';
 import {
   buildCompareHref,
   getComparePath,

@@ -7,7 +7,7 @@ import { PaginationControls } from '@/components/pokemon/PaginationControls';
 import { PokemonList } from '@/components/pokemon/PokemonList';
 import { SearchFilter } from '@/components/pokemon/SearchFilter';
 import { TypeFilter } from '@/components/pokemon/TypeFilter';
-import { PAGE_SIZE } from '@/lib/pokeapi/constants';
+import { PAGE_SIZE } from '@/lib/constants';
 import { filterPokemonByName } from '@/lib/pokeapi/filter';
 import { usePokemonListPage } from '@/hooks/usePokemonListPage';
 import type {

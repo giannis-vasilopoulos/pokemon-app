@@ -1,5 +1,6 @@
+import { PAGE_SIZE } from '../constants';
+
 import { pokeapiFetch } from './client';
-import { PAGE_SIZE } from './constants';
 import type { NamedResource, PaginatedList } from './types';
 
 export async function getPokemonPage(

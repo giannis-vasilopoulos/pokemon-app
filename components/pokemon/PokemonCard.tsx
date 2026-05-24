@@ -11,10 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { MAX_COMPARE_SLOTS } from '@/lib/compare/constants';
 import { buildCompareHref } from '@/lib/compare/url';
 import { useCompareStore } from '@/stores/compare-store';
 import type { PokemonSummary } from '@/lib/pokeapi/types';
+import { MAX_COMPARE_SLOTS } from '@/lib/constants';
 
 type PokemonCardProps = {
   pokemon: PokemonSummary;
