@@ -13,7 +13,7 @@ export function CompareTable() {
   if (slots.length === 0) {
     return (
       <p className="text-muted-foreground text-sm">
-        Add Pokémon from the list to compare up to 4.
+        Add Pokémon from the list to compare up to 3.
       </p>
     );
   }
@@ -26,7 +26,7 @@ export function CompareTable() {
           Clear all
         </Button>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {slots.map((name) => (
           <Card key={name}>
             <CardHeader>

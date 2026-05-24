@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 
-const MAX_COMPARE_SLOTS = 4;
+import { MAX_COMPARE_SLOTS } from '@/lib/compare/constants';
 
 type CompareStore = {
   slots: string[];
   add: (name: string) => void;
   remove: (name: string) => void;
   clear: () => void;
+  setSlots: (slots: string[]) => void;
 };
 
 export const useCompareStore = create<CompareStore>((set) => ({
@@ -20,4 +21,5 @@ export const useCompareStore = create<CompareStore>((set) => ({
   remove: (name) =>
     set((state) => ({ slots: state.slots.filter((slot) => slot !== name) })),
   clear: () => set({ slots: [] }),
+  setSlots: (slots) => set({ slots: slots.slice(0, MAX_COMPARE_SLOTS) }),
 }));

@@ -18,12 +18,17 @@ describe('useCompareStore', () => {
     expect(useCompareStore.getState().slots).toEqual(['pikachu']);
   });
 
-  it('caps at 4 slots', () => {
-    ['a', 'b', 'c', 'd', 'e'].forEach((name) =>
+  it('caps at 3 slots', () => {
+    ['a', 'b', 'c', 'd'].forEach((name) =>
       useCompareStore.getState().add(name)
     );
-    expect(useCompareStore.getState().slots).toHaveLength(4);
-    expect(useCompareStore.getState().slots).not.toContain('e');
+    expect(useCompareStore.getState().slots).toHaveLength(3);
+    expect(useCompareStore.getState().slots).not.toContain('d');
+  });
+
+  it('setSlots replaces and caps slots', () => {
+    useCompareStore.getState().setSlots(['a', 'b', 'c', 'd']);
+    expect(useCompareStore.getState().slots).toEqual(['a', 'b', 'c']);
   });
 
   it('removes and clears slots', () => {
