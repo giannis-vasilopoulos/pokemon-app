@@ -1,9 +1,25 @@
-import { Suspense } from 'react';
+import { redirect } from 'next/navigation';
 
-import { ComparePageClient } from '@/components/pokemon/ComparePageClient';
 import { ShareTeamButton } from '@/components/pokemon/ShareTeamButton';
+import { resolveComparePageData } from '@/lib/compare/resolve';
+import { areCompareSlotsInSync, buildCompareHref } from '@/lib/compare/url';
+import { CompareTable } from '@/components/pokemon/CompareTable';
 
-export default function ComparePage() {
+export default async function ComparePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ pokemons?: string }>;
+}) {
+  const { pokemons } = await searchParams;
+  const { slots, detailsByName } = await resolveComparePageData(pokemons);
+
+  if (pokemons !== undefined) {
+    const params = new URLSearchParams({ pokemons });
+    if (!areCompareSlotsInSync(params, slots)) {
+      redirect(buildCompareHref(slots));
+    }
+  }
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-6 flex items-start justify-between gap-4">
@@ -15,9 +31,7 @@ export default function ComparePage() {
         </header>
         <ShareTeamButton />
       </div>
-      <Suspense fallback={null}>
-        <ComparePageClient />
-      </Suspense>
+      <CompareTable initialSlots={slots} initialDetailsByName={detailsByName} />
     </div>
   );
 }

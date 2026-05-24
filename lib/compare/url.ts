@@ -11,12 +11,7 @@ export function isValidPokemonSlug(name: string): boolean {
 export function sanitizeCompareParam(
   raw: string | string[] | undefined
 ): string[] {
-  const input =
-    raw === undefined || raw === null
-      ? ''
-      : Array.isArray(raw)
-        ? raw.join(',')
-        : raw;
+  const input = Array.isArray(raw) ? raw.join(',') : (raw ?? '');
 
   const seen = new Set<string>();
   const result: string[] = [];

@@ -1,17 +1,31 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 import { CompareRadarChart } from '@/components/pokemon/CompareRadarChart';
 import { CompareStatsTable } from '@/components/pokemon/CompareStatsTable';
 import { useComparePokemonDetails } from '@/hooks/useComparePokemonDetails';
+import { useHydrated } from '@/hooks/useHydrated';
+import type { PokemonDetail } from '@/lib/pokeapi/types';
 import { useCompareStore } from '@/stores/compare-store';
+import { useCompareUrlSync } from '@/hooks/useCompareUrlSync';
 
-export function CompareTable() {
-  const slots = useCompareStore((state) => state.slots);
+type CompareTableProps = {
+  initialSlots: string[];
+  initialDetailsByName: Record<string, PokemonDetail>;
+};
+
+export function CompareTable({
+  initialSlots,
+  initialDetailsByName,
+}: CompareTableProps) {
+  useCompareUrlSync({ initialSlots });
+
+  const hydrated = useHydrated();
+  const storeSlots = useCompareStore((state) => state.slots);
   const remove = useCompareStore((state) => state.remove);
   const clear = useCompareStore((state) => state.clear);
-  const { pokemon, isLoading } = useComparePokemonDetails();
+  const slots = hydrated ? storeSlots : initialSlots;
+  const { pokemon } = useComparePokemonDetails(slots, initialDetailsByName);
 
   if (slots.length === 0) {
     return (
@@ -30,17 +44,8 @@ export function CompareTable() {
         </Button>
       </div>
 
-      {isLoading ? (
-        <Skeleton className="h-64 w-full rounded-xl" />
-      ) : (
-        <CompareStatsTable pokemon={pokemon} onRemove={remove} />
-      )}
-
-      {isLoading ? (
-        <Skeleton className="h-[300px] w-full rounded-xl" />
-      ) : (
-        <CompareRadarChart pokemon={pokemon} />
-      )}
+      <CompareStatsTable pokemon={pokemon} onRemove={remove} />
+      <CompareRadarChart pokemon={pokemon} />
     </div>
   );
 }

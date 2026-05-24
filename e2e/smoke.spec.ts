@@ -16,14 +16,22 @@ test('compare page loads empty state', async ({ page }) => {
 test('compare page loads team from shared url', async ({ page }) => {
   await page.goto('/compare?pokemons=pikachu,charizard');
   await expect(page.getByRole('heading', { name: 'Compare' })).toBeVisible();
-  await expect(page.getByText('pikachu', { exact: true })).toBeVisible();
-  await expect(page.getByText('charizard', { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('columnheader', { name: /pikachu/i })
+  ).toBeVisible();
+  await expect(
+    page.getByRole('columnheader', { name: /charizard/i })
+  ).toBeVisible();
 });
 
 test('compare page sanitizes malformed url segments', async ({ page }) => {
   await page.goto('/compare?pokemons=pikachu,!!!,charizard');
-  await expect(page.getByText('pikachu', { exact: true })).toBeVisible();
-  await expect(page.getByText('charizard', { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('columnheader', { name: /pikachu/i })
+  ).toBeVisible();
+  await expect(
+    page.getByRole('columnheader', { name: /charizard/i })
+  ).toBeVisible();
   await expect(page).toHaveURL('/compare?pokemons=pikachu,charizard');
 });
 

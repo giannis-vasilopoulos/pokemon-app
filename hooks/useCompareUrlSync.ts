@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { COMPARE_QUERY_PARAM } from '@/lib/constants';
@@ -13,17 +13,40 @@ import {
 import { validateCompareSlots } from '@/lib/compare/validate';
 import { useCompareStore } from '@/stores/compare-store';
 
-export function useCompareUrlSync() {
+type UseCompareUrlSyncOptions = {
+  initialSlots?: string[];
+};
+
+export function useCompareUrlSync({
+  initialSlots,
+}: UseCompareUrlSyncOptions = {}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const slots = useCompareStore((state) => state.slots);
   const setSlots = useCompareStore((state) => state.setSlots);
   const isSyncingFromUrl = useRef(false);
+  const serverResolved =
+    initialSlots !== undefined && searchParams.has(COMPARE_QUERY_PARAM);
+
+  useLayoutEffect(() => {
+    if (!serverResolved) return;
+
+    const currentSlots = useCompareStore.getState().slots;
+    if (
+      serializeCompareSlots(currentSlots) !==
+      serializeCompareSlots(initialSlots)
+    ) {
+      isSyncingFromUrl.current = true;
+      setSlots(initialSlots);
+    }
+  }, [serverResolved, initialSlots, setSlots]);
 
   useEffect(() => {
     const hasParam = searchParams.has(COMPARE_QUERY_PARAM);
 
     if (hasParam) {
+      if (serverResolved) return;
+
       const slugSanitized = sanitizeCompareParam(
         searchParams.get(COMPARE_QUERY_PARAM) ?? ''
       );
@@ -58,7 +81,7 @@ export function useCompareUrlSync() {
     if (currentSlots.length > 0) {
       router.replace(buildCompareHref(currentSlots));
     }
-  }, [router, searchParams, setSlots]);
+  }, [router, searchParams, setSlots, serverResolved]);
 
   useEffect(() => {
     if (isSyncingFromUrl.current) {
