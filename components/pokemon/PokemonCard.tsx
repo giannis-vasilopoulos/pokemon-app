@@ -23,9 +23,15 @@ type PokemonCardProps = {
 
 export function PokemonCard({ pokemon, types = [] }: PokemonCardProps) {
   const add = useCompareStore((state) => state.add);
+  const remove = useCompareStore((state) => state.remove);
   const slots = useCompareStore((state) => state.slots);
   const isSelected = slots.includes(pokemon.name);
   const isFull = slots.length >= MAX_COMPARE_SLOTS && !isSelected;
+
+  const onToggleCompare = () => {
+    if (isSelected) return remove(pokemon.name);
+    return add(pokemon.name);
+  };
 
   return (
     <Card>
@@ -46,8 +52,8 @@ export function PokemonCard({ pokemon, types = [] }: PokemonCardProps) {
         <Button
           size="sm"
           variant={isSelected ? 'secondary' : 'outline'}
-          onClick={() => add(pokemon.name)}
-          disabled={isSelected || isFull}
+          onClick={onToggleCompare}
+          disabled={isFull}
         >
           {isSelected ? 'In compare' : 'Compare'}
         </Button>

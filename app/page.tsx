@@ -3,6 +3,11 @@ import { PAGE_SIZE } from '@/lib/constants';
 import { getPokemonPage } from '@/lib/pokeapi/pokemon';
 import { getAllTypes, getPokemonByType } from '@/lib/pokeapi/types-api';
 
+export const metadata = {
+  title: 'Pokémon Browser',
+  description: 'Browse, filter by type, and compare Pokémon.',
+};
+
 export default async function HomePage({
   searchParams,
 }: {
