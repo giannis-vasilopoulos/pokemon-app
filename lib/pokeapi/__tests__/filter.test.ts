@@ -1,13 +1,25 @@
 import { describe, expect, it } from 'vitest';
 
 import { filterPokemonByName } from '../filter';
-import type { NamedResource } from '../types';
+import type { PokemonListItem } from '../types';
 
 describe('filterPokemonByName', () => {
-  const items: NamedResource[] = [
-    { name: 'bulbasaur', url: 'https://pokeapi.co/api/v2/pokemon/1/' },
-    { name: 'charmander', url: 'https://pokeapi.co/api/v2/pokemon/4/' },
-    { name: 'charizard', url: 'https://pokeapi.co/api/v2/pokemon/6/' },
+  const items: PokemonListItem[] = [
+    {
+      name: 'bulbasaur',
+      description: 'A seed Pokémon.',
+      types: ['grass', 'poison'],
+    },
+    {
+      name: 'charmander',
+      description: 'A lizard Pokémon.',
+      types: ['fire'],
+    },
+    {
+      name: 'charizard',
+      description: 'A flame Pokémon.',
+      types: ['fire', 'flying'],
+    },
   ];
 
   it('returns all items when query is empty', () => {

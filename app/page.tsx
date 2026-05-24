@@ -1,7 +1,10 @@
 import { PokemonListPage } from '@/components/pokemon/PokemonListPage';
 import { PAGE_SIZE } from '@/lib/constants';
-import { getPokemonPage } from '@/lib/pokeapi/pokemon';
-import { getAllTypes, getPokemonByType } from '@/lib/pokeapi/types-api';
+import {
+  getPokemonListByType,
+  getPokemonListPage,
+} from '@/lib/pokeapi/graphql/pokemon-list';
+import { getAllTypes } from '@/lib/pokeapi/types-api';
 
 export const metadata = {
   title: 'Pokémon Browser',
@@ -17,11 +20,11 @@ export default async function HomePage({
   const resolvedType = type ?? null;
   const resolvedOffset = Number(offset ?? '0');
 
-  const [types, listOrTypeData] = await Promise.all([
+  const [types, initialListData] = await Promise.all([
     getAllTypes(),
     resolvedType
-      ? getPokemonByType(resolvedType)
-      : getPokemonPage(PAGE_SIZE, resolvedOffset),
+      ? getPokemonListByType(resolvedType, PAGE_SIZE, resolvedOffset)
+      : getPokemonListPage(PAGE_SIZE, resolvedOffset),
   ]);
 
   return (
@@ -36,7 +39,7 @@ export default async function HomePage({
         type={resolvedType}
         offset={resolvedOffset}
         initialTypes={types}
-        initialListOrTypeData={listOrTypeData}
+        initialListData={initialListData}
       />
     </div>
   );

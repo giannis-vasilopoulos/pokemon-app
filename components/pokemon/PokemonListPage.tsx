@@ -13,24 +13,24 @@ import { usePokemonListPage } from '@/hooks/usePokemonListPage';
 import type {
   NamedResource,
   PaginatedList,
-  TypeDetail,
+  PokemonListPageData,
 } from '@/lib/pokeapi/types';
 
 export function PokemonListPage({
   type,
   offset,
   initialTypes,
-  initialListOrTypeData,
+  initialListData,
 }: {
   type: string | null;
   offset: number;
   initialTypes: PaginatedList<NamedResource>;
-  initialListOrTypeData: PaginatedList<NamedResource> | TypeDetail;
+  initialListData: PokemonListPageData;
 }) {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const { items, total, hasNext, hasPrev, isLoading, isError } =
-    usePokemonListPage(type, offset, initialListOrTypeData);
+    usePokemonListPage(type, offset, initialListData);
   const filteredItems = useMemo(
     () => filterPokemonByName(items, searchQuery),
     [items, searchQuery]
