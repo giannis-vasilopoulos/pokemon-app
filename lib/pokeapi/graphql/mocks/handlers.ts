@@ -2,9 +2,54 @@ import { http, HttpResponse } from 'msw';
 
 import { POKEAPI_GRAPHQL_URL } from '../../../constants';
 
-const testPokemonPageData = {
-  pokemon: [{ name: 'bulbasaur' }, { name: 'ivysaur' }],
+const mockPokemonRow = {
+  name: 'bulbasaur',
+  pokemontypes: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
+  pokemonspecy: {
+    pokemonspeciesflavortexts: [
+      {
+        flavor_text:
+          'A strange seed was\nplanted on its\nback at birth.\fThe plant sprouts\nand grows with\nthis POKéMON.',
+      },
+    ],
+  },
+};
+
+const mockPokemonPageData = {
+  pokemon: [
+    mockPokemonRow,
+    {
+      name: 'ivysaur',
+      pokemontypes: [{ type: { name: 'grass' } }, { type: { name: 'poison' } }],
+      pokemonspecy: {
+        pokemonspeciesflavortexts: [
+          {
+            flavor_text:
+              'When the bulb on its back grows, it appears to lose the ability to stand on its hind legs.',
+          },
+        ],
+      },
+    },
+  ],
   pokemon_aggregate: { aggregate: { count: 1302 } },
+};
+
+const mockPokemonByTypeData = {
+  pokemon: [
+    {
+      name: 'charmander',
+      pokemontypes: [{ type: { name: 'fire' } }],
+      pokemonspecy: {
+        pokemonspeciesflavortexts: [
+          {
+            flavor_text:
+              'Obviously prefers\nhot places.\fWhen it rains, steam is said to spout from the tip of its tail.',
+          },
+        ],
+      },
+    },
+  ],
+  pokemon_aggregate: { aggregate: { count: 109 } },
 };
 
 type GraphQLBody = {
@@ -34,6 +79,17 @@ export const pokeapiGraphqlHandlers = [
       return HttpResponse.json({});
     }
 
-    return HttpResponse.json({ data: testPokemonPageData });
+    if (body.operationName === 'PokemonListByType') {
+      return HttpResponse.json({ data: mockPokemonByTypeData });
+    }
+
+    if (
+      body.operationName === 'PokemonListPage' ||
+      body.operationName === 'TestPokemonPage'
+    ) {
+      return HttpResponse.json({ data: mockPokemonPageData });
+    }
+
+    return HttpResponse.json({ data: mockPokemonPageData });
   }),
 ];
