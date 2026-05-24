@@ -1,14 +1,17 @@
 'use client';
 
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+import { CompareRadarChart } from '@/components/pokemon/CompareRadarChart';
+import { CompareStatsTable } from '@/components/pokemon/CompareStatsTable';
+import { useComparePokemonDetails } from '@/hooks/useComparePokemonDetails';
 import { useCompareStore } from '@/stores/compare-store';
 
 export function CompareTable() {
   const slots = useCompareStore((state) => state.slots);
   const remove = useCompareStore((state) => state.remove);
   const clear = useCompareStore((state) => state.clear);
+  const { pokemon, isLoading } = useComparePokemonDetails();
 
   if (slots.length === 0) {
     return (
@@ -26,21 +29,18 @@ export function CompareTable() {
           Clear all
         </Button>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {slots.map((name) => (
-          <Card key={name}>
-            <CardHeader>
-              <CardTitle className="capitalize">{name}</CardTitle>
-            </CardHeader>
-            <CardContent className="flex items-center justify-between">
-              <Badge variant="secondary">Compare slot</Badge>
-              <Button variant="ghost" size="sm" onClick={() => remove(name)}>
-                Remove
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+
+      {isLoading ? (
+        <Skeleton className="h-64 w-full rounded-xl" />
+      ) : (
+        <CompareStatsTable pokemon={pokemon} onRemove={remove} />
+      )}
+
+      {isLoading ? (
+        <Skeleton className="h-[300px] w-full rounded-xl" />
+      ) : (
+        <CompareRadarChart pokemon={pokemon} />
+      )}
     </div>
   );
 }
