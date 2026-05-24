@@ -10,4 +10,9 @@ alwaysApply: false
 - Feature components compose from `ui/` — don't reimplement primitives
 - Props interfaces named `{Component}Props`
 - No fetch, Query, or Zustand inside `ui/` components
-- Add stories in `stories/` for new reusable `ui/` or `pokemon/` components
+- **Every new `components/ui/` file requires a Storybook story** at `stories/{name}.stories.tsx` (e.g. `input.tsx` → `input.stories.tsx`)
+- Story title: `UI/{ComponentName}` (PascalCase, e.g. `UI/Button`)
+- Minimum: a `Default` story plus meaningful variants/states (disabled, error, type variants)
+- Compound components (e.g. `Card`): use a `render` story showing typical composition
+- Domain pattern stories optional (e.g. `SearchFilterPattern`, `ListLoadingPattern`) when they document real app usage
+- Also add stories for new reusable `components/pokemon/` components
