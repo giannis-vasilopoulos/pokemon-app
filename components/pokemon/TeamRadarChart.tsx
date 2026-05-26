@@ -12,16 +12,16 @@ import {
 import {
   formatStatLabel,
   STAT_ORDER,
-  type PokemonCompareStats,
+  type PokemonTeamStats,
 } from '@/lib/pokeapi/mappers';
 
-export type CompareRadarEntry = {
+export type TeamRadarEntry = {
   name: string;
-  stats: PokemonCompareStats | null;
+  stats: PokemonTeamStats | null;
 };
 
-type CompareRadarChartProps = {
-  pokemon: CompareRadarEntry[];
+type TeamRadarChartProps = {
+  pokemon: TeamRadarEntry[];
 };
 
 const CHART_COLORS = [
@@ -30,7 +30,7 @@ const CHART_COLORS = [
   'var(--chart-3)',
 ] as const;
 
-export function CompareRadarChart({ pokemon }: CompareRadarChartProps) {
+export function TeamRadarChart({ pokemon }: TeamRadarChartProps) {
   const ready = pokemon.filter((entry) => entry.stats !== null);
 
   if (ready.length < 2) return null;

@@ -2,11 +2,11 @@
 
 import { useQueries } from '@tanstack/react-query';
 
-import { toPokemonCompareStats } from '@/lib/pokeapi/mappers';
+import { toPokemonTeamStats } from '@/lib/pokeapi/mappers';
 import { getPokemonByName } from '@/lib/pokeapi/pokemon';
 import type { PokemonDetail } from '@/lib/pokeapi/types';
 
-export function useComparePokemonDetails(
+export function useTeamPokemonDetails(
   slots: string[],
   initialDetailsByName: Record<string, PokemonDetail> = {}
 ) {
@@ -28,7 +28,7 @@ export function useComparePokemonDetails(
     if (fromProps) {
       return {
         name,
-        stats: toPokemonCompareStats(fromProps.stats),
+        stats: toPokemonTeamStats(fromProps.stats),
         isLoading: false,
         isError: false,
       };
@@ -37,7 +37,7 @@ export function useComparePokemonDetails(
     const query = queryByName.get(name);
     return {
       name,
-      stats: query?.data ? toPokemonCompareStats(query.data.stats) : null,
+      stats: query?.data ? toPokemonTeamStats(query.data.stats) : null,
       isLoading: query?.isLoading ?? true,
       isError: query?.isError ?? false,
     };

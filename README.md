@@ -1,6 +1,6 @@
 # Pokémon App
 
-Tech assessment app for browsing, filtering, and comparing Pokémon via [PokeAPI](https://pokeapi.co/).
+Tech assessment app for browsing, filtering, and building Pokémon teams via [PokeAPI](https://pokeapi.co/).
 
 ## Prerequisites
 
@@ -35,14 +35,14 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Architecture
 
 ```
-app/                  # Next.js App Router (/, /[name], /compare)
+app/                  # Next.js App Router (/, /[name], /team)
 components/
   ui/                 # shadcn/ui design system (Radix + Tailwind)
   pokemon/            # Domain components
 lib/pokeapi/          # REST + GraphQL clients, types, mappers, MSW mocks
   graphql/            # Thin GraphQL client (PokeAPI v1beta2)
 hooks/                # TanStack Query hooks
-stores/               # Zustand (compare slots)
+stores/               # Zustand (team slots)
 ```
 
 ### List pagination (assessment)
@@ -56,20 +56,20 @@ The list page needs more than names — cards show types and other summary field
 - URL state: `/?type=fire&offset=40`
 - Client: thin `fetch` wrapper in `lib/pokeapi/graphql/` (no Apollo/graphql-request); TanStack Query handles caching
 
-REST (`lib/pokeapi/client.ts`) remains for detail and compare routes where single-resource fetches are sufficient.
+REST (`lib/pokeapi/client.ts`) remains for detail and team routes where single-resource fetches are sufficient.
 
 ### State ownership
 
 | Concern                   | Tool             |
 | ------------------------- | ---------------- |
 | Server data (list, types) | TanStack Query   |
-| Compare slots             | Zustand          |
+| Team slots                | Zustand          |
 | List filter/page          | URL searchParams |
 
 ## Testing
 
 - **Vitest + MSW** — unit tests for API client, pagination, stores
-- **Playwright** — smoke E2E for list and compare routes
+- **Playwright** — smoke E2E for list and team routes
 - **Storybook** — isolated component development
 
 ## AI workflow

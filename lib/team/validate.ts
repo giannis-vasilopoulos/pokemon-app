@@ -1,6 +1,6 @@
 import { pokemonExists } from '@/lib/pokeapi/pokemon';
 
-export async function validateCompareSlots(names: string[]): Promise<string[]> {
+export async function validateTeamSlots(names: string[]): Promise<string[]> {
   if (names.length === 0) return [];
 
   const checks = await Promise.all(

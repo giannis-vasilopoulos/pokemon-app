@@ -1,11 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
 import {
-  areCompareSlotsInSync,
-  buildCompareHref,
+  areTeamSlotsInSync,
+  buildTeamHref,
   isValidPokemonSlug,
-  sanitizeCompareParam,
-  serializeCompareSlots,
+  sanitizeTeamParam,
+  serializeTeamSlots,
 } from '../url';
 
 describe('isValidPokemonSlug', () => {
@@ -25,75 +25,77 @@ describe('isValidPokemonSlug', () => {
   });
 });
 
-describe('sanitizeCompareParam', () => {
+describe('sanitizeTeamParam', () => {
   it('returns empty for missing input', () => {
-    expect(sanitizeCompareParam(undefined)).toEqual([]);
-    expect(sanitizeCompareParam('')).toEqual([]);
+    expect(sanitizeTeamParam(undefined)).toEqual([]);
+    expect(sanitizeTeamParam('')).toEqual([]);
   });
 
   it('dedupes and normalizes', () => {
-    expect(sanitizeCompareParam('pikachu,Pikachu,charizard')).toEqual([
+    expect(sanitizeTeamParam('pikachu,Pikachu,charizard')).toEqual([
       'pikachu',
       'charizard',
     ]);
   });
 
   it('caps at 3 valid names', () => {
-    expect(
-      sanitizeCompareParam('pikachu,charizard,bulbasaur,squirtle')
-    ).toEqual(['pikachu', 'charizard', 'bulbasaur']);
+    expect(sanitizeTeamParam('pikachu,charizard,bulbasaur,squirtle')).toEqual([
+      'pikachu',
+      'charizard',
+      'bulbasaur',
+    ]);
   });
 
   it('drops malformed segments and keeps valid siblings', () => {
-    expect(sanitizeCompareParam('pikachu,!!!,charizard')).toEqual([
+    expect(sanitizeTeamParam('pikachu,!!!,charizard')).toEqual([
       'pikachu',
       'charizard',
     ]);
-    expect(sanitizeCompareParam('pikachu,,charizard')).toEqual([
+    expect(sanitizeTeamParam('pikachu,,charizard')).toEqual([
       'pikachu',
       'charizard',
     ]);
   });
 
   it('returns empty when all segments are invalid', () => {
-    expect(sanitizeCompareParam('!!!,@@@')).toEqual([]);
+    expect(sanitizeTeamParam('!!!,@@@')).toEqual([]);
   });
 
   it('handles array input', () => {
-    expect(sanitizeCompareParam(['pikachu', 'charizard'])).toEqual([
+    expect(sanitizeTeamParam(['pikachu', 'charizard'])).toEqual([
       'pikachu',
       'charizard',
     ]);
   });
 });
 
-describe('serializeCompareSlots and buildCompareHref', () => {
+describe('serializeTeamSlots and buildTeamHref', () => {
   it('serializes slots', () => {
-    expect(serializeCompareSlots(['pikachu', 'charizard'])).toBe(
+    expect(serializeTeamSlots(['pikachu', 'charizard'])).toBe(
       'pikachu,charizard'
     );
   });
 
-  it('builds plain compare path when empty', () => {
-    expect(buildCompareHref([])).toBe('/compare');
+  it('builds plain team path when empty', () => {
+    expect(buildTeamHref([])).toBe('/team');
   });
 
-  it('builds compare path with pokemons param', () => {
-    expect(buildCompareHref(['pikachu', 'charizard'])).toBe(
-      '/compare?pokemons=pikachu,charizard'
+  it('builds team path with pokemons param', () => {
+    expect(buildTeamHref(['pikachu', 'charizard'])).toBe(
+      '/team?pokemons=pikachu,charizard'
     );
   });
 });
 
-describe('areCompareSlotsInSync', () => {
+describe('areTeamSlotsInSync', () => {
   it('is in sync when slots are empty and param is absent', () => {
     const params = new URLSearchParams();
-    expect(areCompareSlotsInSync(params, [])).toBe(true);
+    expect(areTeamSlotsInSync(params, [])).toBe(true);
   });
 
   it('is out of sync when slots are empty but param is present', () => {
     const params = new URLSearchParams('pokemons=pikachu');
-    expect(areCompareSlotsInSync(params, [])).toBe(false);
+    expect(areTeamSlotsInSync(params, [])).toBe(false);
   });
 
   it('is in sync for matching multi-slot list with encoded commas', () => {
@@ -101,17 +103,17 @@ describe('areCompareSlotsInSync', () => {
       'pokemons=bulbasaur%2Civysaur%2Cvenusaur'
     );
     expect(
-      areCompareSlotsInSync(params, ['bulbasaur', 'ivysaur', 'venusaur'])
+      areTeamSlotsInSync(params, ['bulbasaur', 'ivysaur', 'venusaur'])
     ).toBe(true);
   });
 
   it('is out of sync when url has invalid segments that sanitize away', () => {
     const params = new URLSearchParams('pokemons=pikachu,!!!,charizard');
-    expect(areCompareSlotsInSync(params, ['pikachu', 'charizard'])).toBe(false);
+    expect(areTeamSlotsInSync(params, ['pikachu', 'charizard'])).toBe(false);
   });
 
   it('is out of sync when slot order differs', () => {
     const params = new URLSearchParams('pokemons=pikachu,charizard');
-    expect(areCompareSlotsInSync(params, ['charizard', 'pikachu'])).toBe(false);
+    expect(areTeamSlotsInSync(params, ['charizard', 'pikachu'])).toBe(false);
   });
 });

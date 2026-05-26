@@ -1,22 +1,22 @@
 import { redirect } from 'next/navigation';
 
 import { ShareTeamButton } from '@/components/pokemon/ShareTeamButton';
-import { resolveComparePageData } from '@/lib/compare/resolve';
-import { areCompareSlotsInSync, buildCompareHref } from '@/lib/compare/url';
-import { CompareView } from '@/components/pokemon/CompareView';
+import { resolveTeamPageData } from '@/lib/team/resolve';
+import { areTeamSlotsInSync, buildTeamHref } from '@/lib/team/url';
+import { TeamView } from '@/components/pokemon/TeamView';
 
-export default async function ComparePage({
+export default async function TeamPage({
   searchParams,
 }: {
   searchParams: Promise<{ pokemons?: string }>;
 }) {
   const { pokemons } = await searchParams;
-  const { slots, detailsByName } = await resolveComparePageData(pokemons);
+  const { slots, detailsByName } = await resolveTeamPageData(pokemons);
 
   if (pokemons !== undefined) {
     const params = new URLSearchParams({ pokemons });
-    if (!areCompareSlotsInSync(params, slots)) {
-      redirect(buildCompareHref(slots));
+    if (!areTeamSlotsInSync(params, slots)) {
+      redirect(buildTeamHref(slots));
     }
   }
 
@@ -24,14 +24,14 @@ export default async function ComparePage({
     <div className="mx-auto max-w-5xl px-4 py-8">
       <div className="mb-6 flex items-start justify-between gap-4">
         <header className="space-y-2">
-          <h1 className="text-3xl font-semibold tracking-tight">Compare</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Team</h1>
           <p className="text-muted-foreground text-sm">
-            Side-by-side comparison of selected Pokémon.
+            View stats for your selected Pokémon team.
           </p>
         </header>
         <ShareTeamButton />
       </div>
-      <CompareView initialSlots={slots} initialDetailsByName={detailsByName} />
+      <TeamView initialSlots={slots} initialDetailsByName={detailsByName} />
     </div>
   );
 }

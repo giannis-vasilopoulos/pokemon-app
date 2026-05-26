@@ -4,10 +4,10 @@ import { useCallback, useState } from 'react';
 import { Share2Icon } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { useCompareStore } from '@/stores/compare-store';
+import { useTeamStore } from '@/stores/team-store';
 
 export function ShareTeamButton() {
-  const slots = useCompareStore((state) => state.slots);
+  const slots = useTeamStore((state) => state.slots);
   const [copied, setCopied] = useState(false);
 
   const handleShare = useCallback(async () => {

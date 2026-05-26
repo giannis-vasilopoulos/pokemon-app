@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 
-import { MAX_COMPARE_SLOTS } from '@/lib/constants';
+import { MAX_TEAM_SLOTS } from '@/lib/constants';
 
-type CompareStore = {
+type TeamStore = {
   slots: string[];
   add: (name: string) => void;
   remove: (name: string) => void;
@@ -10,16 +10,16 @@ type CompareStore = {
   setSlots: (slots: string[]) => void;
 };
 
-export const useCompareStore = create<CompareStore>((set) => ({
+export const useTeamStore = create<TeamStore>((set) => ({
   slots: [],
   add: (name) =>
     set((state) => {
       if (state.slots.includes(name)) return state;
-      if (state.slots.length >= MAX_COMPARE_SLOTS) return state;
+      if (state.slots.length >= MAX_TEAM_SLOTS) return state;
       return { slots: [...state.slots, name] };
     }),
   remove: (name) =>
     set((state) => ({ slots: state.slots.filter((slot) => slot !== name) })),
   clear: () => set({ slots: [] }),
-  setSlots: (slots) => set({ slots: slots.slice(0, MAX_COMPARE_SLOTS) }),
+  setSlots: (slots) => set({ slots: slots.slice(0, MAX_TEAM_SLOTS) }),
 }));

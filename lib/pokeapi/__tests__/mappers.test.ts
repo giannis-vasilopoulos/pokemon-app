@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   normalizeFlavorText,
-  toPokemonCompareStats,
+  toPokemonTeamStats,
   toPokemonListItem,
   toPokemonListPageData,
 } from '../mappers';
@@ -18,9 +18,9 @@ const fullStats: PokemonStatEntry[] = [
   { base_stat: 90, stat: { name: 'speed' } },
 ];
 
-describe('toPokemonCompareStats', () => {
+describe('toPokemonTeamStats', () => {
   it('maps all six stats and total', () => {
-    expect(toPokemonCompareStats(fullStats)).toEqual({
+    expect(toPokemonTeamStats(fullStats)).toEqual({
       hp: 35,
       attack: 55,
       defense: 40,
@@ -33,7 +33,7 @@ describe('toPokemonCompareStats', () => {
 
   it('defaults missing stats to zero', () => {
     expect(
-      toPokemonCompareStats([{ base_stat: 35, stat: { name: 'hp' } }])
+      toPokemonTeamStats([{ base_stat: 35, stat: { name: 'hp' } }])
     ).toEqual({
       hp: 35,
       attack: 0,

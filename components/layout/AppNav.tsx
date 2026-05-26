@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { CompareNavLink } from '@/components/layout/CompareNavLink';
+import { TeamNavLink } from '@/components/layout/TeamNavLink';
 import { Button } from '@/components/ui/button';
 
 export function AppNav() {
@@ -10,7 +10,7 @@ export function AppNav() {
         <Button variant="ghost" asChild>
           <Link href="/">List</Link>
         </Button>
-        <CompareNavLink />
+        <TeamNavLink />
       </div>
     </nav>
   );

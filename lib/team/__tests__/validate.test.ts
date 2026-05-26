@@ -3,21 +3,21 @@ import { http, HttpResponse } from 'msw';
 
 import { POKEAPI_BASE_URL } from '../../constants';
 import { pokeapiServer } from '../../pokeapi/mocks/server';
-import { validateCompareSlots } from '../validate';
+import { validateTeamSlots } from '../validate';
 
-describe('validateCompareSlots', () => {
+describe('validateTeamSlots', () => {
   it('keeps valid names and drops 404 siblings in order', async () => {
     await expect(
-      validateCompareSlots(['pikachu', 'missingno', 'charizard'])
+      validateTeamSlots(['pikachu', 'missingno', 'charizard'])
     ).resolves.toEqual(['pikachu', 'charizard']);
   });
 
   it('returns empty when all names are unknown', async () => {
-    await expect(validateCompareSlots(['missingno'])).resolves.toEqual([]);
+    await expect(validateTeamSlots(['missingno'])).resolves.toEqual([]);
   });
 
   it('returns empty for empty input', async () => {
-    await expect(validateCompareSlots([])).resolves.toEqual([]);
+    await expect(validateTeamSlots([])).resolves.toEqual([]);
   });
 
   it('propagates non-404 errors', async () => {
@@ -27,6 +27,6 @@ describe('validateCompareSlots', () => {
       )
     );
 
-    await expect(validateCompareSlots(['broken'])).rejects.toThrow();
+    await expect(validateTeamSlots(['broken'])).rejects.toThrow();
   });
 });

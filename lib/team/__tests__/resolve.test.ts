@@ -3,11 +3,11 @@ import { http, HttpResponse } from 'msw';
 
 import { POKEAPI_BASE_URL } from '../../constants';
 import { pokeapiServer } from '../../pokeapi/mocks/server';
-import { resolveComparePageData } from '../resolve';
+import { resolveTeamPageData } from '../resolve';
 
-describe('resolveComparePageData', () => {
+describe('resolveTeamPageData', () => {
   it('keeps valid names and drops 404 siblings in order', async () => {
-    const result = await resolveComparePageData('pikachu,missingno,charizard');
+    const result = await resolveTeamPageData('pikachu,missingno,charizard');
 
     expect(result.slots).toEqual(['pikachu', 'charizard']);
     expect(result.detailsByName.pikachu?.name).toBe('pikachu');
@@ -16,21 +16,21 @@ describe('resolveComparePageData', () => {
   });
 
   it('returns empty when all names are unknown', async () => {
-    const result = await resolveComparePageData('missingno');
+    const result = await resolveTeamPageData('missingno');
 
     expect(result.slots).toEqual([]);
     expect(result.detailsByName).toEqual({});
   });
 
   it('returns empty for missing input', async () => {
-    const result = await resolveComparePageData(undefined);
+    const result = await resolveTeamPageData(undefined);
 
     expect(result.slots).toEqual([]);
     expect(result.detailsByName).toEqual({});
   });
 
   it('sanitizes malformed segments before fetching', async () => {
-    const result = await resolveComparePageData('pikachu,!!!,charizard');
+    const result = await resolveTeamPageData('pikachu,!!!,charizard');
 
     expect(result.slots).toEqual(['pikachu', 'charizard']);
   });
@@ -42,6 +42,6 @@ describe('resolveComparePageData', () => {
       )
     );
 
-    await expect(resolveComparePageData('broken')).rejects.toThrow();
+    await expect(resolveTeamPageData('broken')).rejects.toThrow();
   });
 });

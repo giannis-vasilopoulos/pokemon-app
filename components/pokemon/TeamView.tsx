@@ -4,56 +4,56 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { CompareRadarChart } from '@/components/pokemon/CompareRadarChart';
-import { CompareStatsTable } from '@/components/pokemon/CompareStatsTable';
-import { useComparePokemonDetails } from '@/hooks/useComparePokemonDetails';
+import { TeamRadarChart } from '@/components/pokemon/TeamRadarChart';
+import { TeamStatsTable } from '@/components/pokemon/TeamStatsTable';
+import { useTeamPokemonDetails } from '@/hooks/useTeamPokemonDetails';
 import type { PokemonDetail } from '@/lib/pokeapi/types';
-import { useCompareStore } from '@/stores/compare-store';
-import { buildCompareHref } from '@/lib/compare/url';
+import { useTeamStore } from '@/stores/team-store';
+import { buildTeamHref } from '@/lib/team/url';
 import { useHydrated } from '@/hooks/useHydrated';
 
-type CompareTableProps = {
+type TeamViewProps = {
   initialSlots: string[];
   initialDetailsByName: Record<string, PokemonDetail>;
 };
 
-export function CompareView({
+export function TeamView({
   initialSlots,
   initialDetailsByName,
-}: CompareTableProps) {
+}: TeamViewProps) {
   const router = useRouter();
   const hydrated = useHydrated();
   const initialized = useRef(false);
 
   useEffect(() => {
     if (!initialized.current && initialSlots.length > 0) {
-      useCompareStore.setState({ slots: initialSlots });
+      useTeamStore.setState({ slots: initialSlots });
       initialized.current = true;
     }
   }, [initialSlots]);
 
-  const storeSlots = useCompareStore((state) => state.slots);
-  const remove = useCompareStore((state) => state.remove);
-  const clear = useCompareStore((state) => state.clear);
+  const storeSlots = useTeamStore((state) => state.slots);
+  const remove = useTeamStore((state) => state.remove);
+  const clear = useTeamStore((state) => state.clear);
 
   const slots = hydrated ? storeSlots : initialSlots;
-  const { pokemon } = useComparePokemonDetails(slots, initialDetailsByName);
+  const { pokemon } = useTeamPokemonDetails(slots, initialDetailsByName);
 
   const handleRemove = (name: string) => {
     remove(name);
-    const nextSlots = useCompareStore.getState().slots;
-    router.replace(buildCompareHref(nextSlots), { scroll: false });
+    const nextSlots = useTeamStore.getState().slots;
+    router.replace(buildTeamHref(nextSlots), { scroll: false });
   };
 
   const handleClear = () => {
     clear();
-    router.replace(buildCompareHref([]), { scroll: false });
+    router.replace(buildTeamHref([]), { scroll: false });
   };
 
   if (slots.length === 0) {
     return (
       <p className="text-muted-foreground text-sm">
-        Add Pokémon from the list to compare up to 3.
+        Add Pokémon from the list to build your team (up to 3).
       </p>
     );
   }
@@ -67,8 +67,8 @@ export function CompareView({
         </Button>
       </div>
 
-      <CompareStatsTable pokemon={pokemon} onRemove={handleRemove} />
-      <CompareRadarChart pokemon={pokemon} />
+      <TeamStatsTable pokemon={pokemon} onRemove={handleRemove} />
+      <TeamRadarChart pokemon={pokemon} />
     </div>
   );
 }

@@ -2,34 +2,31 @@
 
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { getWinningIndices, shouldHighlightStat } from '@/lib/compare/stats';
+import { getWinningIndices, shouldHighlightStat } from '@/lib/team/stats';
 import {
   formatStatLabel,
   MAX_BASE_STAT,
   STAT_ORDER,
-  type PokemonCompareStats,
+  type PokemonTeamStats,
 } from '@/lib/pokeapi/mappers';
 import { cn } from '@/lib/utils';
 
-export type ComparePokemonEntry = {
+export type TeamPokemonEntry = {
   name: string;
-  stats: PokemonCompareStats | null;
+  stats: PokemonTeamStats | null;
   isLoading: boolean;
   isError: boolean;
 };
 
-type CompareStatsTableProps = {
-  pokemon: ComparePokemonEntry[];
+type TeamStatsTableProps = {
+  pokemon: TeamPokemonEntry[];
   onRemove: (name: string) => void;
 };
 
 const HIGHLIGHT_CLASS = 'font-semibold text-green-600 dark:text-green-400';
 const WINNER_BAR_CLASS = 'bg-green-600 dark:bg-green-400';
 
-export function CompareStatsTable({
-  pokemon,
-  onRemove,
-}: CompareStatsTableProps) {
+export function TeamStatsTable({ pokemon, onRemove }: TeamStatsTableProps) {
   const statRows = [...STAT_ORDER, 'total'] as const;
 
   return (

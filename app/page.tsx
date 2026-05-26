@@ -1,10 +1,10 @@
-import { CompareTray } from '@/components/pokemon/CompareTray';
+import { TeamTray } from '@/components/pokemon/TeamTray';
 import { PokemonListPage } from '@/components/pokemon/PokemonListPage';
 import { getAllTypes } from '@/lib/pokeapi/types-api';
 
 export const metadata = {
   title: 'Pokémon Browser',
-  description: 'Browse, filter by type, and compare Pokémon.',
+  description: 'Browse, filter by type, and build your Pokémon team.',
 };
 
 export default async function HomePage() {
@@ -15,11 +15,11 @@ export default async function HomePage() {
       <header className="space-y-2">
         <h1 className="text-3xl font-semibold tracking-tight">Pokémon</h1>
         <p className="text-muted-foreground text-sm">
-          Browse, filter by type, and compare Pokémon.
+          Browse, filter by type, and build your Pokémon team.
         </p>
       </header>
       <PokemonListPage initialTypes={types} />
-      <CompareTray />
+      <TeamTray />
     </div>
   );
 }

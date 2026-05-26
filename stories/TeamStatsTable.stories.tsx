@@ -1,21 +1,24 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import { CompareRadarChart } from '../components/pokemon/CompareRadarChart';
+import { TeamStatsTable } from '../components/pokemon/TeamStatsTable';
 
 const meta = {
-  title: 'Pokemon/CompareRadarChart',
-  component: CompareRadarChart,
+  title: 'Pokemon/TeamStatsTable',
+  component: TeamStatsTable,
   tags: ['autodocs'],
-} satisfies Meta<typeof CompareRadarChart>;
+} satisfies Meta<typeof TeamStatsTable>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const TwoPokemon: Story = {
   args: {
+    onRemove: () => undefined,
     pokemon: [
       {
         name: 'pikachu',
+        isLoading: false,
+        isError: false,
         stats: {
           hp: 35,
           attack: 55,
@@ -28,6 +31,8 @@ export const TwoPokemon: Story = {
       },
       {
         name: 'charizard',
+        isLoading: false,
+        isError: false,
         stats: {
           hp: 78,
           attack: 84,

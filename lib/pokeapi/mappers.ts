@@ -19,7 +19,7 @@ export const STAT_ORDER = [
 
 export type PokemonStatName = (typeof STAT_ORDER)[number];
 
-export type PokemonCompareStats = Record<PokemonStatName, number> & {
+export type PokemonTeamStats = Record<PokemonStatName, number> & {
   total: number;
 };
 
@@ -65,9 +65,9 @@ export function formatStatLabel(name: PokemonStatName | 'total'): string {
     .join(' ');
 }
 
-export function toPokemonCompareStats(
+export function toPokemonTeamStats(
   stats: PokemonStatEntry[]
-): PokemonCompareStats {
+): PokemonTeamStats {
   const byName = Object.fromEntries(
     stats.map((entry) => [entry.stat.name, entry.base_stat])
   ) as Partial<Record<PokemonStatName, number>>;

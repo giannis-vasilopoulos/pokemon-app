@@ -11,10 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { buildCompareHref } from '@/lib/compare/url';
-import { useCompareStore } from '@/stores/compare-store';
+import { useTeamStore } from '@/stores/team-store';
 import type { PokemonSummary } from '@/lib/pokeapi/types';
-import { MAX_COMPARE_SLOTS } from '@/lib/constants';
+import { MAX_TEAM_SLOTS } from '@/lib/constants';
 
 type PokemonCardProps = {
   pokemon: PokemonSummary;
@@ -27,13 +26,13 @@ export function PokemonCard({
   types = [],
   description,
 }: PokemonCardProps) {
-  const add = useCompareStore((state) => state.add);
-  const remove = useCompareStore((state) => state.remove);
-  const slots = useCompareStore((state) => state.slots);
+  const add = useTeamStore((state) => state.add);
+  const remove = useTeamStore((state) => state.remove);
+  const slots = useTeamStore((state) => state.slots);
   const isSelected = slots.includes(pokemon.name);
-  const isFull = slots.length >= MAX_COMPARE_SLOTS && !isSelected;
+  const isFull = slots.length >= MAX_TEAM_SLOTS && !isSelected;
 
-  const onToggleCompare = () => {
+  const onToggleTeam = () => {
     if (isSelected) return remove(pokemon.name);
     return add(pokemon.name);
   };
@@ -58,13 +57,13 @@ export function PokemonCard({
           <Button
             size="sm"
             variant={isSelected ? 'secondary' : 'outline'}
-            aria-label={`${isSelected ? 'Remove' : 'Add'} ${pokemon.name} ${isSelected ? 'from' : 'to'} compare`}
-            title={`${isSelected ? 'Remove' : 'Add'} ${pokemon.name} ${isSelected ? 'from' : 'to'} compare`}
-            onClick={onToggleCompare}
+            aria-label={`${isSelected ? 'Remove' : 'Add'} ${pokemon.name} ${isSelected ? 'from' : 'to'} team`}
+            title={`${isSelected ? 'Remove' : 'Add'} ${pokemon.name} ${isSelected ? 'from' : 'to'} team`}
+            onClick={onToggleTeam}
             disabled={isFull}
           >
             {isSelected
-              ? `In Team (${slots.length} of ${MAX_COMPARE_SLOTS})`
+              ? `In Team (${slots.length} of ${MAX_TEAM_SLOTS})`
               : 'Add to Team'}
           </Button>
         </div>

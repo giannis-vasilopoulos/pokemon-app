@@ -2,17 +2,17 @@ import { PokeApiNotFoundError } from '@/lib/pokeapi/client';
 import { getPokemonByName } from '@/lib/pokeapi/pokemon';
 import type { PokemonDetail } from '@/lib/pokeapi/types';
 
-import { sanitizeCompareParam } from './url';
+import { sanitizeTeamParam } from './url';
 
-export type ComparePageData = {
+export type TeamPageData = {
   slots: string[];
   detailsByName: Record<string, PokemonDetail>;
 };
 
-export async function resolveComparePageData(
+export async function resolveTeamPageData(
   rawPokemons: string | undefined
-): Promise<ComparePageData> {
-  const sanitized = sanitizeCompareParam(rawPokemons);
+): Promise<TeamPageData> {
+  const sanitized = sanitizeTeamParam(rawPokemons);
 
   if (sanitized.length === 0) return { slots: [], detailsByName: {} };
 
