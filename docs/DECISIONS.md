@@ -35,7 +35,14 @@ Unit tests intercept `fetch` at the network layer via MSW handlers — same code
 Dual pagination modes (both backed by GraphQL):
 
 - Default list: `pokemon(limit, offset)` + `pokemon_aggregate` in one GraphQL request
-- Type filter: filtered `pokemon` query with same pagination args (cached by Query key `['type-pokemon', typeName]`)
+- Type filter: filtered `pokemon` query with same pagination args (cached by Query key `['type-pokemon', typeName, offset]`)
+
+**Navigation (type / offset):**
+
+- Server [`app/page.tsx`](../app/page.tsx) fetches **types only** (REST `/type`, cached via `revalidate`) — it does **not** declare `searchParams`, so changing `?type=` / `?offset=` does not block on a server RSC refetch + GraphQL round-trip
+- List rows load in the **client** via TanStack Query (`usePokemonListPage`); URL stays shareable via `useSearchParams` + `router.replace` in [`PokemonListPage`](../components/pokemon/PokemonListPage.tsx) (`lib/list/url.ts` helpers)
+- `placeholderData: keepPreviousData` avoids a blank list while the next query loads; skeleton only on first load (`isPending` without placeholder)
+- Trade-off: cold load of `/?type=fire` shows a brief list skeleton until the client query completes (faster than ~1s frozen in-app navigation)
 
 ## No TanStack Virtual
 
