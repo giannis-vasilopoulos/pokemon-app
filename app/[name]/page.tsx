@@ -81,7 +81,7 @@ export default async function PokemonDetailPage({
               weight={pokemon.weight}
               abilities={pokemon.abilities}
             />
-            <PokemonBaseStats stats={pokemon.stats} />
+            <PokemonBaseStats name={pokemon.name} stats={pokemon.stats} />
           </CardContent>
         </Card>
       </div>

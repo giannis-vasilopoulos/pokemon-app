@@ -1,4 +1,14 @@
+'use client';
+
+import { PolarAngleAxis, PolarGrid, Radar, RadarChart } from 'recharts';
+
 import { Progress } from '@/components/ui/progress';
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from '@/components/ui/chart';
 import {
   formatStatLabel,
   MAX_BASE_STAT,
@@ -7,12 +17,30 @@ import {
 } from '@/lib/pokeapi/mappers';
 
 type PokemonBaseStatsProps = {
+  name?: string;
   stats: PokemonTeamStats;
 };
 
-export function PokemonBaseStats({ stats }: PokemonBaseStatsProps) {
+const CHART_COLOR = 'var(--chart-1)';
+
+export function PokemonBaseStats({
+  name = 'stats',
+  stats,
+}: PokemonBaseStatsProps) {
+  const chartConfig = {
+    [name]: {
+      label: name,
+      color: CHART_COLOR,
+    },
+  } satisfies ChartConfig;
+
+  const data = STAT_ORDER.map((statKey) => ({
+    stat: formatStatLabel(statKey),
+    value: stats[statKey],
+  }));
+
   return (
-    <section aria-label="Base stats" className="space-y-3">
+    <section aria-label="Base stats" className="space-y-4">
       <h3 className="text-sm font-medium">Base stats</h3>
       <dl className="space-y-3">
         {STAT_ORDER.map((statKey) => {
@@ -35,12 +63,25 @@ export function PokemonBaseStats({ stats }: PokemonBaseStatsProps) {
             </div>
           );
         })}
-        <div className="bg-muted grid grid-cols-[7rem_2.5rem_1fr] items-center gap-3 rounded-md px-2 py-2 font-medium">
-          <dt className="text-sm">{formatStatLabel('total')}</dt>
-          <dd className="text-right text-sm tabular-nums">{stats.total}</dd>
-          <dd aria-hidden="true" />
-        </div>
       </dl>
+
+      <ChartContainer
+        config={chartConfig}
+        className="mx-auto min-h-[300px] w-full"
+      >
+        <RadarChart data={data} outerRadius="80%">
+          <ChartTooltip content={<ChartTooltipContent />} />
+          <PolarGrid />
+          <PolarAngleAxis dataKey="stat" />
+          <Radar
+            name={name}
+            dataKey="value"
+            stroke={CHART_COLOR}
+            fill={CHART_COLOR}
+            fillOpacity={0.2}
+          />
+        </RadarChart>
+      </ChartContainer>
     </section>
   );
 }

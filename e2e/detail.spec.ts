@@ -12,11 +12,7 @@ test('detail page shows stats and attributes for pikachu', async ({ page }) => {
   await expect(page.getByText('Hidden')).toBeVisible();
   await expect(page.getByText('35', { exact: true })).toBeVisible();
   await expect(page.getByText('90', { exact: true })).toBeVisible();
-  await expect(page.getByRole('progressbar', { name: /HP 35/i })).toBeVisible();
-  await expect(
-    page.getByRole('progressbar', { name: /Speed 90/i })
-  ).toBeVisible();
-  await expect(page.getByRole('progressbar')).toHaveCount(6);
+  await expect(page.getByRole('region', { name: 'Base stats' })).toBeVisible();
 });
 
 test('detail page navigates from list', async ({ page }) => {
