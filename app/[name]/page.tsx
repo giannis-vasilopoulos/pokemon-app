@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 
-import { Badge } from '@/components/ui/badge';
+import { TypeBadge } from '@/components/pokemon/TypeBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { pokeapiFetch } from '@/lib/pokeapi/client';
@@ -51,9 +51,7 @@ export default async function PokemonDetailPage({
           )}
           <div className="flex flex-wrap gap-2">
             {pokemon.types.map(({ type }) => (
-              <Badge key={type.name} className="capitalize">
-                {type.name}
-              </Badge>
+              <TypeBadge key={type.name} type={type.name} />
             ))}
           </div>
         </CardContent>

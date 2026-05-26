@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import { Badge } from '@/components/ui/badge';
+import { TypeBadge } from '@/components/pokemon/TypeBadge';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -51,9 +51,7 @@ export function PokemonCard({
       <CardContent className="flex flex-1 flex-col">
         <div className="mt-auto flex flex-wrap gap-2">
           {types.map((type) => (
-            <Badge key={type} variant="secondary" className="capitalize">
-              {type}
-            </Badge>
+            <TypeBadge key={type} type={type} />
           ))}
         </div>
         <div className="flex items-center gap-2 pt-4">
