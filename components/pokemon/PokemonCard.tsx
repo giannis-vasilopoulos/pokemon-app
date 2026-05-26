@@ -58,18 +58,15 @@ export function PokemonCard({
           <Button
             size="sm"
             variant={isSelected ? 'secondary' : 'outline'}
+            aria-label={`${isSelected ? 'Remove' : 'Add'} ${pokemon.name} ${isSelected ? 'from' : 'to'} compare`}
+            title={`${isSelected ? 'Remove' : 'Add'} ${pokemon.name} ${isSelected ? 'from' : 'to'} compare`}
             onClick={onToggleCompare}
             disabled={isFull}
           >
             {isSelected
-              ? `In Compare (${slots.length} of ${MAX_COMPARE_SLOTS})`
-              : 'Compare'}
+              ? `In Team (${slots.length} of ${MAX_COMPARE_SLOTS})`
+              : 'Add to Team'}
           </Button>
-          {isSelected && (
-            <Button variant="link" size="sm" asChild className="h-auto p-0">
-              <Link href={buildCompareHref(slots)}>Go to compare</Link>
-            </Button>
-          )}
         </div>
       </CardContent>
     </Card>

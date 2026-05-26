@@ -1,3 +1,4 @@
+import { CompareTray } from '@/components/pokemon/CompareTray';
 import { PokemonListPage } from '@/components/pokemon/PokemonListPage';
 import { getAllTypes } from '@/lib/pokeapi/types-api';
 
@@ -18,6 +19,7 @@ export default async function HomePage() {
         </p>
       </header>
       <PokemonListPage initialTypes={types} />
+      <CompareTray />
     </div>
   );
 }
