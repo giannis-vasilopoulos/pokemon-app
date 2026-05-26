@@ -1,5 +1,7 @@
 'use client';
 
+import { XIcon } from 'lucide-react';
+
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { getWinningIndices, shouldHighlightStat } from '@/lib/team/stats';
@@ -44,18 +46,20 @@ export function TeamStatsTable({ pokemon, onRemove }: TeamStatsTableProps) {
               <th
                 key={entry.name}
                 scope="col"
-                className="min-w-28 p-3 text-center font-medium"
+                className="relative min-w-28 p-3 text-center font-medium"
               >
-                <div className="flex flex-col items-center gap-2">
-                  <span className="capitalize">{entry.name}</span>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onRemove(entry.name)}
-                  >
-                    Remove
-                  </Button>
-                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="text-foreground bg-accent hover:bg-accent/50 absolute top-2 right-3 h-6 w-6 cursor-pointer"
+                  onClick={() => onRemove(entry.name)}
+                  aria-label={`Remove ${entry.name} from team`}
+                  title={`Remove ${entry.name} from team`}
+                >
+                  <XIcon className="h-3.5 w-3.5" />
+                </Button>
+                <span className="capitalize">{entry.name}</span>
               </th>
             ))}
           </tr>
