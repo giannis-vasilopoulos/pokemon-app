@@ -17,32 +17,59 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+Optional env overrides (see [`.env.example`](.env.example)):
+
+- `NEXT_PUBLIC_POKEAPI_BASE_URL` — REST API base
+- `NEXT_PUBLIC_POKEAPI_GRAPHQL_URL` — GraphQL endpoint (defaults in [`lib/constants.ts`](lib/constants.ts))
+
 ## Scripts
 
 | Script                 | Description                    |
 | ---------------------- | ------------------------------ |
 | `pnpm dev`             | Start Next.js dev server       |
 | `pnpm build`           | Production build               |
+| `pnpm start`           | Run production build           |
 | `pnpm lint`            | ESLint                         |
+| `pnpm lint:fix`        | ESLint with auto-fix           |
 | `pnpm typecheck`       | TypeScript check               |
 | `pnpm test`            | Vitest (watch)                 |
 | `pnpm test:run`        | Vitest (CI)                    |
 | `pnpm test:e2e`        | Playwright E2E                 |
+| `pnpm test:e2e:ui`     | Playwright interactive UI      |
 | `pnpm storybook`       | Component library on port 6006 |
 | `pnpm build-storybook` | Static Storybook export        |
 | `pnpm format`          | Prettier write                 |
+| `pnpm format:check`    | Prettier check (no write)      |
+
+## Routes and features
+
+| Route     | What it does                                                                            |
+| --------- | --------------------------------------------------------------------------------------- |
+| `/`       | Paginated list (40 per page), type filter, search; **Team tray** to add up to 3 Pokémon |
+| `/[name]` | Detail page (sprites, types, stats, abilities); Gen 1 pre-rendered at build time        |
+| `/team`   | Team stats table + overlaid radar chart; shareable via `?pokemons=slug1,slug2`          |
+
+Architecture decisions (caching, GraphQL vs REST, team URL rules, charts, deferred AI) live in [`docs/DECISIONS.md`](docs/DECISIONS.md).
 
 ## Architecture
 
 ```
-app/                  # Next.js App Router (/, /[name], /team)
+app/                      # Next.js App Router (/, /[name], /team)
 components/
-  ui/                 # shadcn/ui design system (Radix + Tailwind)
-  pokemon/            # Domain components
-lib/pokeapi/          # REST + GraphQL clients, types, mappers, MSW mocks
-  graphql/            # Thin GraphQL client (PokeAPI v1beta2)
-hooks/                # TanStack Query hooks
-stores/               # Zustand (team slots)
+  ui/                     # shadcn/ui primitives (Radix + Tailwind)
+  pokemon/                # Domain UI (list, cards, team charts)
+  layout/                 # App nav
+  providers/              # TanStack Query provider
+docs/                     # ADRs (DECISIONS.md)
+e2e/                      # Playwright specs
+hooks/                    # TanStack Query + team detail hooks
+lib/
+  pokeapi/                # REST + GraphQL clients, types, mappers, MSW mocks
+    graphql/              # Thin GraphQL client (PokeAPI v1beta2)
+  team/                   # Team URL, resolve, validate, stat highlights
+  list/                   # List page URL helpers
+  pokemon/                # Type colors and shared Pokémon UI helpers
+stores/                   # Zustand (team slots)
 ```
 
 ### List pagination (assessment)
@@ -54,27 +81,33 @@ The list page needs more than names — cards show types and other summary field
 - **No type filter:** GraphQL `pokemon(limit, offset)` + `pokemon_aggregate` (one request per page)
 - **Type filter:** GraphQL `pokemon(where: { pokemontypes: … })` with the same limit/offset (one request per page; replaces REST `GET /type/{name}` + client-side slice)
 - URL state: `/?type=fire&offset=40`
-- Client: thin `fetch` wrapper in `lib/pokeapi/graphql/` (no Apollo/graphql-request); TanStack Query handles caching
+- **Types dropdown:** server-fetched on `/` (REST `/type`, ISR); list rows load on the **client** via TanStack Query so filter/page changes stay fast
+- Client: thin `fetch` wrapper in `lib/pokeapi/graphql/` (no Apollo/graphql-request)
 
 REST (`lib/pokeapi/client.ts`) remains for detail and team routes where single-resource fetches are sufficient.
 
 ### State ownership
 
-| Concern                   | Tool             |
-| ------------------------- | ---------------- |
-| Server data (list, types) | TanStack Query   |
-| Team slots                | Zustand          |
-| List filter/page          | URL searchParams |
+| Concern                          | Tool                                                      |
+| -------------------------------- | --------------------------------------------------------- |
+| Type filter options on `/`       | Server fetch (`getAllTypes`), passed into list UI         |
+| List rows (paginated / filtered) | TanStack Query (client GraphQL)                           |
+| Team slots (in-session)          | Zustand                                                   |
+| List filter and page             | URL `searchParams` (`?type=`, `?offset=`)                 |
+| Shareable team roster            | URL `?pokemons=` on `/team` (+ Zustand sync on team page) |
+| Team page Pokémon details        | Server resolve on load; client hook for slot edits        |
 
 ## Testing
 
-- **Vitest + MSW** — unit tests for API client, pagination, stores
-- **Playwright** — smoke E2E for list and team routes
-- **Storybook** — isolated component development
+- **Vitest + MSW** — unit tests for API client, GraphQL list, team URL/resolve, stores
+- **Playwright** — E2E in `e2e/` (smoke, search, type filter, detail); run locally via `pnpm test:e2e` (not in GitHub Actions CI)
+- **Storybook** — isolated `ui/` and `pokemon/` components
+
+CI (`.github/workflows/ci.yml`): `lint`, `typecheck`, `test:run`, `build`.
 
 ## AI workflow
 
-Cursor rules live in `.cursor/rules/`. AI assists with boilerplate; all diffs are human-reviewed. See `docs/DECISIONS.md` for ADRs.
+Cursor rules live in `.cursor/rules/`. AI assists with boilerplate; all diffs are human-reviewed.
 
 ## TODO (time-boxed for assessment)
 
