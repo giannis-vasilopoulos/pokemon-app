@@ -19,7 +19,9 @@ export class PokeApiNotFoundError extends PokeApiError {
 
 export async function pokeapiFetch<T>(
   path: string,
-  options?: RequestInit
+  options: RequestInit & {
+    next?: { revalidate?: number; tags?: string[] };
+  } = {}
 ): Promise<T> {
   const url = path.startsWith('http') ? path : `${POKEAPI_BASE_URL}${path}`;
   const response = await fetch(url, options);

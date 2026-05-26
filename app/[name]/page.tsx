@@ -6,6 +6,7 @@ import { TypeBadge } from '@/components/pokemon/TypeBadge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { pokeapiFetch } from '@/lib/pokeapi/client';
+import { POKEMON_CACHE_TAG, POKEMON_REVALIDATE_SECONDS } from '@/lib/constants';
 
 type PokemonDetail = {
   name: string;
@@ -22,7 +23,12 @@ export default async function PokemonDetailPage({
 
   let pokemon: PokemonDetail;
   try {
-    pokemon = await pokeapiFetch<PokemonDetail>(`/pokemon/${name}`);
+    pokemon = await pokeapiFetch<PokemonDetail>(`/pokemon/${name}`, {
+      next: {
+        revalidate: POKEMON_REVALIDATE_SECONDS,
+        tags: [POKEMON_CACHE_TAG],
+      },
+    });
   } catch {
     notFound();
   }
