@@ -30,12 +30,31 @@ Unit tests intercept `fetch` at the network layer via MSW handlers — same code
 - GraphQL endpoint is rate-limited (100 req/h/IP) and beta; TanStack Query + Next.js fetch cache mitigate repeat traffic
 - REST client kept for detail (`/[name]`) and compare — single-resource fetches do not suffer N+1
 
+**Client-side GraphQL (list / type filter):**
+
+Interactive list and type-filter changes call `pokeapiGraphql` from the browser via TanStack Query (`usePokemonListPage` → `lib/pokeapi/graphql/pokemon-list.ts`). The endpoint URL (`graphql.pokeapi.co`) is visible in DevTools — that is expected, not a leaked secret:
+
+- PokeAPI GraphQL is a **public read API** with no API keys; CORS allows browser `fetch`
+- This is not the same as exposing a private backend: there is no auth, admin surface, or credentials in the bundle
+- Rate limits apply **per client IP** (~100 req/h), not to a shared server quota; TanStack Query `staleTime` reduces repeat calls
+
+**Why client, not only server:** Server `searchParams` on the home page forced a ~1s RSC refetch on every type change. Client Query + URL sync (`router.replace`) keeps shareable `?type=` / `?offset=` without blocking navigation on server GraphQL.
+
+**Production follow-up (out of scope here):** A Route Handler / BFF proxy would centralize traffic, add server-side caching, and protect a shared rate-limit budget — useful at scale, not required when the upstream API is public and read-only.
+
 ## TanStack Query for list + type filter
 
 Dual pagination modes (both backed by GraphQL):
 
 - Default list: `pokemon(limit, offset)` + `pokemon_aggregate` in one GraphQL request
-- Type filter: filtered `pokemon` query with same pagination args (cached by Query key `['type-pokemon', typeName]`)
+- Type filter: filtered `pokemon` query with same pagination args (cached by Query key `['type-pokemon', typeName, offset]`)
+
+**Navigation (type / offset):**
+
+- Server [`app/page.tsx`](../app/page.tsx) fetches **types only** (REST `/type`, cached via `revalidate`) — it does **not** declare `searchParams`, so changing `?type=` / `?offset=` does not block on a server RSC refetch + GraphQL round-trip
+- List rows load in the **client** via TanStack Query (`usePokemonListPage`); URL stays shareable via `useSearchParams` + `router.replace` in [`PokemonListPage`](../components/pokemon/PokemonListPage.tsx) (`lib/list/url.ts` helpers)
+- `placeholderData: keepPreviousData` avoids a blank list while the next query loads; skeleton only on first load (`isPending` without placeholder)
+- Trade-off: cold load of `/?type=fire` shows a brief list skeleton until the client query completes (faster than ~1s frozen in-app navigation)
 
 ## No TanStack Virtual
 

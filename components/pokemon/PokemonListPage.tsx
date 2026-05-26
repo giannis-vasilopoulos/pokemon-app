@@ -1,36 +1,29 @@
 'use client';
 
 import { useCallback, useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { PaginationControls } from '@/components/pokemon/PaginationControls';
 import { PokemonList } from '@/components/pokemon/PokemonList';
 import { SearchFilter } from '@/components/pokemon/SearchFilter';
 import { TypeFilter } from '@/components/pokemon/TypeFilter';
-import { PAGE_SIZE } from '@/lib/constants';
-import { filterPokemonByName } from '@/lib/pokeapi/filter';
 import { usePokemonListPage } from '@/hooks/usePokemonListPage';
-import type {
-  NamedResource,
-  PaginatedList,
-  PokemonListPageData,
-} from '@/lib/pokeapi/types';
+import { PAGE_SIZE } from '@/lib/constants';
+import { buildListHref, parseListSearchParams } from '@/lib/list/url';
+import { filterPokemonByName } from '@/lib/pokeapi/filter';
+import type { NamedResource, PaginatedList } from '@/lib/pokeapi/types';
 
 export function PokemonListPage({
-  type,
-  offset,
   initialTypes,
-  initialListData,
 }: {
-  type: string | null;
-  offset: number;
   initialTypes: PaginatedList<NamedResource>;
-  initialListData: PokemonListPageData;
 }) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { type, offset } = parseListSearchParams(searchParams);
   const [searchQuery, setSearchQuery] = useState('');
   const { items, total, hasNext, hasPrev, isLoading, isError } =
-    usePokemonListPage(type, offset, initialListData);
+    usePokemonListPage(type, offset);
   const filteredItems = useMemo(
     () => filterPokemonByName(items, searchQuery),
     [items, searchQuery]
@@ -38,11 +31,7 @@ export function PokemonListPage({
 
   const updateParams = useCallback(
     (nextType: string | null, nextOffset: number) => {
-      const params = new URLSearchParams();
-      if (nextType) params.set('type', nextType);
-      if (nextOffset > 0) params.set('offset', String(nextOffset));
-      const query = params.toString();
-      router.push(query ? `/?${query}` : '/');
+      router.replace(buildListHref(nextType, nextOffset), { scroll: false });
     },
     [router]
   );

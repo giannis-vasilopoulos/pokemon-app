@@ -1,9 +1,4 @@
 import { PokemonListPage } from '@/components/pokemon/PokemonListPage';
-import { PAGE_SIZE } from '@/lib/constants';
-import {
-  getPokemonListByType,
-  getPokemonListPage,
-} from '@/lib/pokeapi/graphql/pokemon-list';
 import { getAllTypes } from '@/lib/pokeapi/types-api';
 
 export const metadata = {
@@ -11,21 +6,8 @@ export const metadata = {
   description: 'Browse, filter by type, and compare Pokémon.',
 };
 
-export default async function HomePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ type: string; offset: string }>;
-}) {
-  const { type, offset } = await searchParams;
-  const resolvedType = type ?? null;
-  const resolvedOffset = Number(offset ?? '0');
-
-  const [types, initialListData] = await Promise.all([
-    getAllTypes(),
-    resolvedType
-      ? getPokemonListByType(resolvedType, PAGE_SIZE, resolvedOffset)
-      : getPokemonListPage(PAGE_SIZE, resolvedOffset),
-  ]);
+export default async function HomePage() {
+  const types = await getAllTypes();
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8">
@@ -35,12 +17,7 @@ export default async function HomePage({
           Browse, filter by type, and compare Pokémon.
         </p>
       </header>
-      <PokemonListPage
-        type={resolvedType}
-        offset={resolvedOffset}
-        initialTypes={types}
-        initialListData={initialListData}
-      />
+      <PokemonListPage initialTypes={types} />
     </div>
   );
 }
