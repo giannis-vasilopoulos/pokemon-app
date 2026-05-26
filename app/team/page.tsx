@@ -5,6 +5,11 @@ import { resolveTeamPageData } from '@/lib/team/resolve';
 import { areTeamSlotsInSync, buildTeamHref } from '@/lib/team/url';
 import { TeamView } from '@/components/pokemon/TeamView';
 
+export const metadata = {
+  title: 'Team',
+  description: 'View your selected Pokémon team.',
+};
+
 export default async function TeamPage({
   searchParams,
 }: {

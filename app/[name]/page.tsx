@@ -10,6 +10,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toPokemonDetailView } from '@/lib/pokeapi/mappers';
 import { getPokemonByName } from '@/lib/pokeapi/pokemon';
 import { PokeApiNotFoundError } from '@/lib/pokeapi/client';
+import { getPokemonListPage } from '@/lib/pokeapi/graphql/pokemon-list';
+import type { PokemonListItem } from '@/lib/pokeapi/types';
+
+export async function generateStaticParams() {
+  const pokemons = await getPokemonListPage(151, 0);
+  return pokemons.items.map((p: PokemonListItem) => ({
+    name: p.name,
+  }));
+}
 
 export async function generateMetadata({
   params,
