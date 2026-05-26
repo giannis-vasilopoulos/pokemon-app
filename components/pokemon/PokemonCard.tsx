@@ -39,7 +39,7 @@ export function PokemonCard({
   };
 
   return (
-    <Card>
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle className="capitalize">
           <Link href={`/${pokemon.name}`} className="hover:underline">
@@ -48,30 +48,31 @@ export function PokemonCard({
         </CardTitle>
         <CardDescription>{description || 'Pokémon'}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-wrap items-center gap-2">
-        {types.map((type) => (
-          <Badge key={type} variant="secondary" className="capitalize">
-            {type}
-          </Badge>
-        ))}
-        <Button
-          size="sm"
-          variant={isSelected ? 'secondary' : 'outline'}
-          onClick={onToggleCompare}
-          disabled={isFull}
-        >
-          {isSelected ? 'In compare' : 'Compare'}
-        </Button>
-        {isSelected && slots.length === 1 && (
-          <p className="text-muted-foreground w-full text-sm">
-            Choose one more to compare.
-          </p>
-        )}
-        {isSelected && slots.length >= 2 && (
-          <Button variant="link" size="sm" asChild className="h-auto p-0">
-            <Link href={buildCompareHref(slots)}>Go to compare</Link>
+      <CardContent className="flex flex-1 flex-col">
+        <div className="mt-auto flex flex-wrap gap-2">
+          {types.map((type) => (
+            <Badge key={type} variant="secondary" className="capitalize">
+              {type}
+            </Badge>
+          ))}
+        </div>
+        <div className="flex items-center gap-2 pt-4">
+          <Button
+            size="sm"
+            variant={isSelected ? 'secondary' : 'outline'}
+            onClick={onToggleCompare}
+            disabled={isFull}
+          >
+            {isSelected
+              ? `In Compare (${slots.length} of ${MAX_COMPARE_SLOTS})`
+              : 'Compare'}
           </Button>
-        )}
+          {isSelected && (
+            <Button variant="link" size="sm" asChild className="h-auto p-0">
+              <Link href={buildCompareHref(slots)}>Go to compare</Link>
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

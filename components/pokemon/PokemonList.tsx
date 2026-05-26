@@ -36,7 +36,7 @@ export function PokemonList({
   return (
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {items.map((item) => (
-        <li key={item.name}>
+        <li key={item.name} className="h-full">
           <PokemonCard
             pokemon={{ name: item.name, url: '' }}
             types={item.types}
