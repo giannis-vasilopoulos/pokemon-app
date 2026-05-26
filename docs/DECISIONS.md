@@ -161,6 +161,47 @@ Owned, styled, accessible components in-repo; Storybook documents the library.
 - Chart colors use CSS variables (`--chart-1` … `--chart-3`) in `globals.css`, consistent with shadcn Chart theming
 - Domain components live in `components/pokemon/` (`TeamRadarChart`, stat rows with `Progress`); no fetch/Query inside `ui/`
 
+## AI team suggestion (deferred)
+
+**Problem:** With 2 of 3 team slots filled, users may not know which Pokémon improves **type coverage** (e.g. Charizard + Blastoise still weak to Electric or Rock). A bounded AI assist is more useful than a generic chat.
+
+**Decision (intended, not shipped):** Add `POST /api/ai/suggest` and a Team page CTA — deferred for assessment time. Document here and in [README TODO](../README.md#todo-time-boxed-for-assessment).
+
+**Request (when built):**
+
+```json
+{ "slots": ["charizard", "blastoise"] }
+```
+
+- `slots.length` must be **2** for v1 (suggest 3rd only); slugs normalized like [`lib/team/url.ts`](../lib/team/url.ts); unknown names → `400`
+
+**Response (when built):**
+
+```json
+{
+  "suggestion": { "name": "rotom-wash", "types": ["electric", "water"] },
+  "reasoning": "…type matchup only, ~3 sentences…",
+  "coverage": {
+    "teamWeakTo": ["rock", "electric"],
+    "suggestionResists": ["water", "electric"]
+  }
+}
+```
+
+**Why hybrid (code + LLM), not LLM-only:**
+
+- **Ground truth in `lib/team/type-coverage.ts`** — aggregate defensive weaknesses from PokeAPI REST `GET /type/{name}` `damage_relations` (same data layer as detail/team; MSW-testable)
+- **Candidate pool** — GraphQL filter by types that resist team weaknesses; exclude names already in `slots`; cap ~25 names so the model cannot invent Pokémon
+- **LLM** — Vercel AI SDK `generateObject` + Zod: pick `name` from enum(candidateSlugs), write `reasoning`; final slug checked with `pokemonExists`
+- **UI** — [`TeamView`](../components/pokemon/TeamView.tsx): button when `slots.length === 2`; show reasoning; **Add to team** uses existing store + `buildTeamHref` (no silent auto-add)
+
+**Env / ops:**
+
+- `OPENAI_API_KEY` server-only (document in `.env.example` when implemented); `503` if missing
+- CI tests mock LLM; no API key in GitHub Actions
+
+**Out of scope for v1:** open chat, MCP, auto-fill without confirm, suggest-2nd when 1 slot filled
+
 ## Storybook
 
 Documents `ui/` and `pokemon/` components in isolation.
