@@ -1,13 +1,17 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  formatAbilityName,
+  formatPokemonHeight,
+  formatPokemonWeight,
   normalizeFlavorText,
+  toPokemonDetailView,
   toPokemonTeamStats,
   toPokemonListItem,
   toPokemonListPageData,
 } from '../mappers';
 import type { GraphQLPokemonListResponse } from '../graphql/types';
-import type { PokemonStatEntry } from '../types';
+import type { PokemonDetail, PokemonStatEntry } from '../types';
 
 const fullStats: PokemonStatEntry[] = [
   { base_stat: 35, stat: { name: 'hp' } },
@@ -126,5 +130,68 @@ describe('toPokemonListPageData', () => {
 
   it('sets hasNext false on last page', () => {
     expect(toPokemonListPageData(raw, 40, 1280).hasNext).toBe(false);
+  });
+});
+
+describe('formatPokemonHeight', () => {
+  it('converts decimeters to meters', () => {
+    expect(formatPokemonHeight(4)).toBe('0.4 m');
+    expect(formatPokemonHeight(17)).toBe('1.7 m');
+  });
+});
+
+describe('formatPokemonWeight', () => {
+  it('converts hectograms to kilograms', () => {
+    expect(formatPokemonWeight(60)).toBe('6.0 kg');
+    expect(formatPokemonWeight(905)).toBe('90.5 kg');
+  });
+});
+
+describe('formatAbilityName', () => {
+  it('formats slug to title case', () => {
+    expect(formatAbilityName('lightning-rod')).toBe('Lightning Rod');
+    expect(formatAbilityName('static')).toBe('Static');
+  });
+});
+
+describe('toPokemonDetailView', () => {
+  const raw: PokemonDetail = {
+    name: 'pikachu',
+    sprites: {
+      front_default:
+        'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
+    },
+    types: [{ type: { name: 'electric' } }],
+    height: 4,
+    weight: 60,
+    abilities: [
+      { ability: { name: 'static' }, is_hidden: false },
+      { ability: { name: 'lightning-rod' }, is_hidden: true },
+    ],
+    stats: fullStats,
+  };
+
+  it('maps detail fields to view model', () => {
+    expect(toPokemonDetailView(raw)).toEqual({
+      name: 'pikachu',
+      sprite:
+        'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png',
+      types: ['electric'],
+      height: '0.4 m',
+      weight: '6.0 kg',
+      abilities: [
+        { name: 'Static', isHidden: false },
+        { name: 'Lightning Rod', isHidden: true },
+      ],
+      stats: {
+        hp: 35,
+        attack: 55,
+        defense: 40,
+        'special-attack': 50,
+        'special-defense': 50,
+        speed: 90,
+        total: 320,
+      },
+    });
   });
 });

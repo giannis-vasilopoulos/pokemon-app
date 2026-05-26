@@ -38,4 +38,10 @@ export type PokemonDetail = {
   sprites: { front_default: string | null };
   types: Array<{ type: { name: string } }>;
   stats: PokemonStatEntry[];
+  height: number;
+  weight: number;
+  abilities: Array<{
+    ability: { name: string };
+    is_hidden: boolean;
+  }>;
 };

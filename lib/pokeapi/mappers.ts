@@ -3,6 +3,7 @@ import type {
   GraphQLPokemonListRow,
 } from './graphql/types';
 import type {
+  PokemonDetail,
   PokemonListItem,
   PokemonListPageData,
   PokemonStatEntry,
@@ -82,5 +83,54 @@ export function toPokemonTeamStats(
     'special-defense': values[4],
     speed: values[5],
     total: values.reduce((sum, value) => sum + value, 0),
+  };
+}
+
+export type PokemonAbilityView = {
+  name: string;
+  isHidden: boolean;
+};
+
+export type PokemonDetailView = {
+  name: string;
+  sprite: string | null;
+  types: string[];
+  stats: PokemonTeamStats;
+  height: string;
+  weight: string;
+  abilities: PokemonAbilityView[];
+};
+
+function formatSlugLabel(slug: string): string {
+  return slug
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+export function formatPokemonHeight(heightDm: number): string {
+  return `${(heightDm / 10).toFixed(1)} m`;
+}
+
+export function formatPokemonWeight(weightHg: number): string {
+  return `${(weightHg / 10).toFixed(1)} kg`;
+}
+
+export function formatAbilityName(slug: string): string {
+  return formatSlugLabel(slug);
+}
+
+export function toPokemonDetailView(raw: PokemonDetail): PokemonDetailView {
+  return {
+    name: raw.name,
+    sprite: raw.sprites.front_default,
+    types: raw.types.map(({ type }) => type.name),
+    stats: toPokemonTeamStats(raw.stats),
+    height: formatPokemonHeight(raw.height),
+    weight: formatPokemonWeight(raw.weight),
+    abilities: raw.abilities.map(({ ability, is_hidden }) => ({
+      name: formatAbilityName(ability.name),
+      isHidden: is_hidden,
+    })),
   };
 }
