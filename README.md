@@ -33,6 +33,7 @@ Optional env overrides (see [`.env.example`](.env.example)):
 | `pnpm lint:fix`        | ESLint with auto-fix           |
 | `pnpm typecheck`       | TypeScript check               |
 | `pnpm test`            | Vitest (watch)                 |
+| `pnpm test:coverage`   | Vitest Coverage                |
 | `pnpm test:run`        | Vitest (CI)                    |
 | `pnpm test:e2e`        | Playwright E2E                 |
 | `pnpm test:e2e:ui`     | Playwright interactive UI      |
