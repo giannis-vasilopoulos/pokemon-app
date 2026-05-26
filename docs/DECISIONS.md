@@ -80,3 +80,22 @@ Documents `ui/` and `pokemon/` components in isolation.
 ## Husky pre-commit
 
 lint-staged runs ESLint + Prettier on staged files only. Tests run in CI.
+
+## GitHub Actions CI
+
+Workflow: `.github/workflows/ci.yml` — single `quality` job on `ubuntu-latest`.
+
+**Triggers:** push and pull requests targeting `main`.
+
+**Steps (in order):**
+
+1. `pnpm install --frozen-lockfile` — pnpm 9, Node from `.nvmrc`, pnpm cache via `actions/setup-node`
+2. `pnpm lint` — ESLint, zero warnings allowed
+3. `pnpm typecheck` — `tsc --noEmit`
+4. `pnpm test:run` — Vitest unit/integration (MSW-mocked PokeAPI)
+5. `pnpm build` — Next.js production build gate
+
+**Not in CI:**
+
+- **Playwright E2E** — browser install and runtime cost; run locally via `pnpm test:e2e`
+- **Prettier check** — enforced on staged files via Husky/lint-staged before commit
