@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { XIcon } from 'lucide-react';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { buildTeamHref } from '@/lib/team/url';
 import { MAX_TEAM_SLOTS } from '@/lib/constants';
@@ -14,7 +15,7 @@ export function TeamTray() {
   if (slots.length === 0) return null;
 
   return (
-    <div className="fixed right-0 bottom-0 left-0 z-50 border-t bg-white shadow-lg">
+    <div className="border-border bg-background fixed right-0 bottom-0 left-0 z-50 border-t shadow-lg">
       <div className="mx-auto flex max-w-7xl items-center gap-4 p-4">
         <span className="text-muted-foreground text-sm">
           Team ({slots.length}/{MAX_TEAM_SLOTS}):
@@ -48,24 +49,27 @@ export function TeamTray() {
 
 function TraySlot({ name, onRemove }: { name: string; onRemove: () => void }) {
   return (
-    <div className="bg-muted relative flex items-center gap-2 rounded-md border px-3 py-1">
-      <span className="text-sm capitalize">{name}</span>
-      <button
+    <Badge variant="secondary" className="gap-1 pr-1 capitalize">
+      {name}
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="h-6 w-6"
         onClick={onRemove}
         aria-label={`Remove ${name} from team`}
         title={`Remove ${name} from team`}
-        className="text-muted-foreground hover:text-foreground"
       >
         <XIcon />
-      </button>
-    </div>
+      </Button>
+    </Badge>
   );
 }
 
 function EmptySlot() {
   return (
-    <div className="flex items-center rounded-md border border-dashed px-3 py-1">
-      <span className="text-muted-foreground text-sm">Empty</span>
-    </div>
+    <Badge variant="outline" className="text-muted-foreground font-normal">
+      Empty
+    </Badge>
   );
 }
