@@ -41,6 +41,32 @@ Dual pagination modes (both backed by GraphQL):
 
 Only 40 DOM nodes per page. Frontend pagination slices data, not the render tree.
 
+## React Compiler
+
+**Decision:** Enable React Compiler via `reactCompiler: true` in `next.config.ts` and `babel-plugin-react-compiler` (Next.js 16 + React 19).
+
+**Why:**
+
+- Aligns with React's direction: automatic memoization at compile time instead of sprinkling `useMemo`, `useCallback`, and `memo` across client components
+- Low-risk opt-in for a greenfield app — no runtime API changes, compiler output is validated by existing Vitest and CI build gates
+
+**Not a performance play for this app:**
+
+- List page renders at most 40 cards; re-render cost is not a bottleneck (see "No TanStack Virtual" above)
+- Real wins remain in data fetching (GraphQL batching, TanStack Query caching), not component memoization
+
+**Rules of React linting:**
+
+- Already covered — no separate `eslint-plugin-react-compiler` needed
+- `eslint-config-next` (via `core-web-vitals`) enables `eslint-plugin-react-hooks@7` `recommended` config, which includes compiler-backed rules (`react-hooks/purity`, `react-hooks/immutability`, `react-hooks/refs`, etc.) alongside `rules-of-hooks` and `exhaustive-deps`
+- Enforced in CI via `pnpm lint`
+
+**Trade-offs:**
+
+- Slightly longer production builds (compile-time analysis)
+- Rules of React violations surface in ESLint (edit/CI) and may cause the compiler to skip optimizing affected components at build time
+- Existing manual memo hooks (e.g. in `PokemonListPage`) are redundant but harmless; can be removed incrementally as confidence grows
+
 ## Flat routes
 
 `/` (list), `/[name]` (detail), `/compare` — no `/pokemon` prefix.
