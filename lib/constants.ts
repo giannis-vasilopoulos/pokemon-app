@@ -11,6 +11,3 @@ export const TEAM_QUERY_PARAM = 'pokemons';
 
 export const POKEMON_LIST_CACHE_TAG = 'pokemon-list';
 export const POKEMON_LIST_REVALIDATE_SECONDS = 3600;
-
-export const POKEMON_CACHE_TAG = 'pokemon';
-export const POKEMON_REVALIDATE_SECONDS = 3600;

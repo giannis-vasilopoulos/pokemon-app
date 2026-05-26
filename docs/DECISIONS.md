@@ -90,6 +90,49 @@ Only 40 DOM nodes per page. Frontend pagination slices data, not the render tree
 
 `/` (list), `/[name]` (detail), `/team` — no `/pokemon` prefix.
 
+## Page caching strategy
+
+Production build output (`pnpm build`):
+
+| Route     | Rendering   | Revalidate | Notes                                           |
+| --------- | ----------- | ---------- | ----------------------------------------------- |
+| `/`       | Static (○)  | 1h         | Shell pre-rendered; list data is client-fetched |
+| `/[name]` | SSG (●)     | —          | 151 Gen 1 paths via `generateStaticParams`      |
+| `/team`   | Dynamic (ƒ) | —          | SSR on every request                            |
+
+**Legend:** ○ prerendered static content · ● SSG (`generateStaticParams`) · ƒ server-rendered on demand.
+
+### `/` — static shell + client list
+
+[`app/page.tsx`](../app/page.tsx) does **not** declare `searchParams`, so changing `?type=` / `?offset=` does not invalidate or block the page shell.
+
+- **Server (ISR):** `getAllTypes()` → REST `GET /type` with `next.revalidate: 3600` (`POKEMON_LIST_REVALIDATE_SECONDS`) — build shows **Revalidate 1h / Expire 1y**
+- **Client:** Pokémon rows load via TanStack Query (`usePokemonListPage` → GraphQL); `staleTime: 60_000` in [`QueryProvider`](../components/providers/QueryProvider.tsx) dedupes repeat navigations
+- **Why split:** Server only caches the type filter list; paginated/filtered rows stay off the RSC path so in-app navigation stays fast (see "TanStack Query for list + type filter" above)
+
+### `/[name]` — SSG for Gen 1
+
+[`app/[name]/page.tsx`](../app/[name]/page.tsx) uses `generateStaticParams` to pre-render the first **151** Pokémon (names from GraphQL `getPokemonListPage(151, 0)` at build time).
+
+- **Build-time fetch:** `getPokemonByName(name)` → REST `GET /pokemon/{name}` with default fetch cache (no `revalidate` option) — HTML is fully static until the next deploy
+- **Beyond Gen 1:** `dynamicParams` defaults to `true`; valid slugs not in the 151 pre-built paths still render on first request (on-demand SSR), then follow default Next.js caching for that path — **404 is PokeAPI-not-found only**, not missing from `generateStaticParams`
+- **Why SSG:** Detail pages are read-heavy and shareable; pre-rendering Gen 1 covers the primary browse path with zero server work per hit
+
+### `/team` — dynamic SSR
+
+[`app/team/page.tsx`](../app/team/page.tsx) reads `searchParams.pokemons`, so Next.js marks the route **dynamic (ƒ)**.
+
+- **Server:** `resolveTeamPageData` fetches up to 3 Pokémon via REST on each request — no `next.revalidate` / tags (user-specific, URL-driven)
+- **Client:** Zustand holds in-session edits; URL sync for sharing (see "Team slots: Zustand + URL" below)
+- **Why dynamic:** Team composition is query-param state; caching a shared HTML response would serve the wrong roster
+
+### Shared constants
+
+Defined in [`lib/constants.ts`](../lib/constants.ts):
+
+- `POKEMON_LIST_REVALIDATE_SECONDS = 3600` — REST `/type` (home shell) and GraphQL list queries used at build time (`POKEMON_LIST_CACHE_TAG = 'pokemon-list'`)
+- Detail routes (`getPokemonByName`) use default fetch cache — Gen 1 HTML is static at build; Gen 2+ on-demand paths rely on Next.js defaults, not app-level revalidate constants
+
 ## Hybrid component layout
 
 - `components/ui/` — shadcn/Radix primitives (design system)
