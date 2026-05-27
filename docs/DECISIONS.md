@@ -151,6 +151,7 @@ Owned, styled, accessible components in-repo; Storybook documents the library.
 - On team page load: URL param wins when present; otherwise store hydrates URL
 - Max **3** slots; comma-separated PokeAPI slugs; plain `/team` valid (empty team)
 - Invalid URL segments dropped individually (malformed slugs sync; unknown names async via PokeAPI 404); cap at 3 after sanitize; URL rewritten to match
+- **Deferred:** Detail pages (`/[name]`) do not yet expose Add to Team or `TeamTray` — only list cards on `/` and team page edits use the store today. Planned: shared `AddToTeamButton` (extract from `PokemonCard`), wire into [`app/[name]/page.tsx`](../app/[name]/page.tsx), render `TeamTray` on detail routes (or in root layout), E2E in `e2e/detail.spec.ts`. See [README TODO](../README.md#todo-time-boxed-for-assessment).
 
 ## Team stats visualization: shadcn Progress + Recharts
 
