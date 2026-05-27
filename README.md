@@ -2,6 +2,8 @@
 
 Tech assessment app for browsing, filtering, and building Pokémon teams via [PokeAPI](https://pokeapi.co/).
 
+> **Open source:** This repository is prepared for open source — MIT-licensed, CI on every PR, and contributor docs for issues and pull requests. Feedback and contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+
 ## Prerequisites
 
 - Node.js 22 (see `.nvmrc`)
@@ -121,3 +123,15 @@ The following would normally be implemented; deferred for time. Design and ratio
 - [Next.js Documentation](https://nextjs.org/docs)
 - [PokeAPI REST](https://pokeapi.co/docs/v2)
 - [PokeAPI GraphQL](https://pokeapi.co/docs/graphql)
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). Please follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## License
+
+Released under the [MIT License](LICENSE.md).
+
+## Disclaimer
+
+Pokémon names, characters, and sprites are trademarks and copyrights of Nintendo, Creatures Inc., and GAME FREAK inc. This is an unofficial fan project for educational purposes. Game data is sourced from [PokeAPI](https://pokeapi.co/). The MIT license applies to this repository's source code only — not to Pokémon intellectual property.
