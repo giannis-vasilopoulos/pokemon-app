@@ -37,8 +37,37 @@ For UI changes, consider adding or updating Vitest tests. E2E tests (`pnpm test:
 
 - Open an issue first for large changes so we can align on approach.
 - Keep PRs focused — one concern per PR when possible.
-- Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages (`feat:`, `fix:`, `docs:`, `test:`, `chore:`, etc.).
+- Use [Conventional Commits](https://www.conventionalcommits.org/) for commit messages and **PR titles** (enforced locally and in CI).
 - Update README or `docs/DECISIONS.md` if behavior or architecture changes.
+
+### Commit message format
+
+Format: `type(scope): subject`
+
+- **type** — one of: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`
+- **subject** — imperative, lowercase, no trailing period
+
+Valid examples:
+
+```
+feat: add team share button
+fix(team): handle invalid slug in URL
+docs: document GraphQL list pagination
+```
+
+Invalid examples:
+
+```
+Added team share button
+feat: Add team share button.
+WIP
+```
+
+### Enforcement
+
+- **Local:** Husky runs commitlint on every `git commit` via the `commit-msg` hook (installed when you run `pnpm install`).
+- **CI:** Pull request titles are validated by the Commit lint workflow. With squash merge, the PR title becomes the commit on `main`, so title it correctly before merging.
+- Bypassing local hooks with `git commit --no-verify` does not bypass CI.
 
 ## Code conventions
 
