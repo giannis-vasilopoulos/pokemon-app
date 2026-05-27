@@ -91,6 +91,8 @@ export default async function PokemonDetailPage({
               abilities={pokemon.abilities}
             />
             <PokemonBaseStats name={pokemon.name} stats={pokemon.stats} />
+            {/* TODO: Add "Add to Team" button (reuse PokemonCard's useTeamStore toggle via shared AddToTeamButton).
+                Also render TeamTray here (or in layout) for tray feedback; add E2E in e2e/detail.spec.ts. */}
           </CardContent>
         </Card>
       </div>

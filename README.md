@@ -116,6 +116,7 @@ Cursor rules live in `.cursor/rules/`. AI assists with boilerplate; all diffs ar
 
 The following would normally be implemented; deferred for time. Design and rationale are documented in [`docs/DECISIONS.md`](docs/DECISIONS.md#ai-team-suggestion-deferred).
 
+- **Add to Team on `/[name]`** — Detail pages show stats and attributes but cannot add Pokémon to the team yet (list cards on `/` already support this via `useTeamStore`). Planned: shared `AddToTeamButton` client component (extract from `PokemonCard`), wire into [`app/[name]/page.tsx`](app/[name]/page.tsx), render `TeamTray` on detail routes (or in root layout) for bottom-tray feedback, and E2E coverage in `e2e/detail.spec.ts`.
 - **AI 3rd-member suggestion** — On `/team`, when 2 of 3 slots are filled (e.g. Charizard + Blastoise), a **Suggest 3rd Pokémon** action would call `POST /api/ai/suggest` with `{ "slots": ["charizard", "blastoise"] }` and return a PokeAPI-valid slug plus short **type-coverage reasoning** (not open-ended chat). User confirms before adding via existing Zustand + `?pokemons=` URL sync. Planned stack: deterministic coverage from PokeAPI `damage_relations` in `lib/team/`, GraphQL candidate pool, LLM pick + prose via Vercel AI SDK (`OPENAI_API_KEY` server-only). See ADR for request/response shape and validation rules.
 
 ## Learn more
