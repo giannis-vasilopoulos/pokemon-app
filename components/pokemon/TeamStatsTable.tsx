@@ -46,20 +46,22 @@ export function TeamStatsTable({ pokemon, onRemove }: TeamStatsTableProps) {
               <th
                 key={entry.name}
                 scope="col"
-                className="relative min-w-28 p-3 text-center font-medium"
+                className="min-w-28 p-3 text-center font-medium"
               >
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="text-foreground bg-accent hover:bg-accent/50 absolute top-2 right-3 h-6 w-6 cursor-pointer"
-                  onClick={() => onRemove(entry.name)}
-                  aria-label={`Remove ${entry.name} from team`}
-                  title={`Remove ${entry.name} from team`}
-                >
-                  <XIcon className="h-3.5 w-3.5" />
-                </Button>
-                <span className="capitalize">{entry.name}</span>
+                <div className="flex items-center justify-center gap-1">
+                  <span className="capitalize">{entry.name}</span>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 shrink-0"
+                    onClick={() => onRemove(entry.name)}
+                    aria-label={`Remove ${entry.name} from team`}
+                    title={`Remove ${entry.name} from team`}
+                  >
+                    <XIcon className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
               </th>
             ))}
           </tr>
